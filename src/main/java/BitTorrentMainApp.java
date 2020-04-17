@@ -8,7 +8,7 @@ public class BitTorrentMainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("/fx-gui-templates/sample.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/fx-gui-templates/mainLayout.fxml"));
         primaryStage.setTitle("BitTorrent Protocol");
         primaryStage.setScene(new Scene(root, 300, 275));
         primaryStage.show();
