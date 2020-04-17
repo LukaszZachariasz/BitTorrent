@@ -5,10 +5,25 @@
 *.jar
 *.war
 *.ear
-*.iml
-
-## Directory-based project format:
-.idea/
 
 # IntelliJ
 /out/
+*.iml
+.idea/
+
+# Eclipse #
+.classpath
+.project
+.settings/
+bin/
+
+# Maven #
+dependency-reduced-pom.xml
+target/
+
+# Gradle #
+.gradle/
+
+# logs #
+*.log
+logs/
