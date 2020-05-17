@@ -1,4 +1,4 @@
-package com.sonb.tracker;
+package util;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -9,12 +9,18 @@ import java.util.List;
 
 public class Torrent {
 
-    //tylko to jest uzywane do rejestracji
-    String fileId; //uuid
+    //Using to register as uuid
+    String fileId;
 
-    //infoZTorrenta
+    //Info from torrent
     String humanName;
+
     int pieceNumbers;
+
+    List<String> trackerIps;
+
+    //FIXME: not needed in torrent registration in tracker
+    List<TrackerInfo> trackerInfoList = new ArrayList<>();
 
     public String getHumanName() {
         return humanName;
@@ -27,9 +33,6 @@ public class Torrent {
     public int getPieceNumbers() {
         return pieceNumbers;
     }
-
-    //FIXME: not needed in torrent registration in tracker
-    List<TrackerInfo> trackerInfoList = new ArrayList<>();
 
     public String getFileId() {
         return fileId;
@@ -55,4 +58,11 @@ public class Torrent {
         this.trackerInfoList = trackerInfoList;
     }
 
+    public List<String> getTrackerIps() {
+        return trackerIps;
+    }
+
+    public void setTrackerIps(List<String> trackerIps) {
+        this.trackerIps = trackerIps;
+    }
 }

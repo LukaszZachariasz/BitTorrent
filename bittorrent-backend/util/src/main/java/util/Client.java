@@ -1,4 +1,4 @@
-package com.sonb.tracker;
+package util;
 
 import java.util.Map;
 
@@ -9,13 +9,15 @@ import java.util.Map;
 public class Client {
 
     String clientIp;
+
     int numbersOfParts;
+
     Map<Integer, PartStatus> partIdToStatus;
+
 
     public String getClientIp() {
         return clientIp;
     }
-
 
     public void setClientIp(String clientIp) {
         this.clientIp = clientIp;

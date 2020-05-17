@@ -1,4 +1,4 @@
-package com.sonb.tracker;
+package util;
 
 /**
  * @author Łukasz Zachariasz
