@@ -1,6 +1,10 @@
 package com.sonb.tracker;
 
 import org.springframework.stereotype.Service;
+import util.Client;
+import util.PartStatus;
+import util.Torrent;
+import util.TrackerStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,8 +22,11 @@ public class TrackerService {
 
 
     private final TrackerStatus trackerStatus = TrackerStatus.UP;
+
     private final List<String> clientsList;
+
     private final Map<String, List<Client>> fileIdToClients;
+
 
     public TrackerService() {
         this.clientsList = new ArrayList<>();
