@@ -9,16 +9,23 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.sonb</groupId>
-	<artifactId>client</artifactId>
+	<artifactId>tracker</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>client</name>
-	<description>Demo project for Spring Boot</description>
+	<name>tracker-backend</name>
+	<description>Tracker for BitTorrent Simulator</description>
 
 	<properties>
 		<java.version>11</java.version>
 	</properties>
 
 	<dependencies>
+
+		<dependency>
+			<groupId>com.sonb</groupId>
+			<artifactId>util</artifactId>
+			<version>1.0-SNAPSHOT</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
