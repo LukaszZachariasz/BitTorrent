@@ -1,5 +1,6 @@
 package com.sonb.client;
 
+import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import util.*;
 
@@ -18,8 +19,13 @@ public class ClientService {
 
     private final Map<String, File> fileIdToFile = new HashMap<>();
 
-    private Integer sleepValue;
+    private Integer sleepValue = 50;
 
+    private final ClientToTrackerConnector clientToTrackerConnector;
+
+    public ClientService(RestTemplateBuilder restTemplateBuilder) {
+        this.clientToTrackerConnector = new ClientToTrackerConnector(restTemplateBuilder);
+    }
 
     public Integer getSleepValue() {
         return sleepValue;
@@ -78,12 +84,20 @@ public class ClientService {
                 .collect(Collectors.toList());
     }
 
-
     void sleep() {
         try {
             Thread.sleep(sleepValue);
         } catch (InterruptedException e) {
             throw new RuntimeException();
         }
+    }
+
+    public void removeFileFromClient(String fileId, String trackerId) {
+        fileIdToFile.remove(fileId);
+        clientToTrackerConnector.removeFileFromClient(fileId, trackerId, fetchMyIp());
+    }
+
+    private String fetchMyIp() {
+        return "NOT YET IMPLEMENTED";
     }
 }

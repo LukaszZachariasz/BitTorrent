@@ -53,10 +53,14 @@ public class TrackerService {
                 .mapToObj(value -> value)
                 .collect(Collectors.toMap(o -> o, __ -> PartStatus.DOWNLOADED));
 
-        //client.setPartIdToStatus(collect);
         return new ArrayList<>() {{
             add(client);
         }};
+    }
+
+    public void removeFileFromClient(String fileId, String clientIp) {
+        List<Client> clients = fileIdToClients.get(fileId);
+        clients.removeIf(client -> client.getClientIp().equals(clientIp));
     }
 
 }

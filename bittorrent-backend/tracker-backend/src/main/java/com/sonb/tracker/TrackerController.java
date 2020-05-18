@@ -29,6 +29,13 @@ public class TrackerController {
         return ResponseEntity.ok("TEST_OK_REGISTER");
     }
 
+    @DeleteMapping("{fileId}/{clientIp}")
+    ResponseEntity<?> removeFileFromClient(@PathVariable String fileId, @PathVariable String clientIp) {
+        trackerService.removeFileFromClient(fileId, clientIp);
+
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("clients/{fileId}")
     List<String> getClients(@PathVariable String fileId) {
         return trackerService.getClients(fileId);

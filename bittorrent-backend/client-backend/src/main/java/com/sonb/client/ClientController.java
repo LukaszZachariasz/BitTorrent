@@ -29,6 +29,13 @@ public class ClientController {
         return ResponseEntity.ok(torrent);
     }
 
+    @DeleteMapping("{fileId}/{trackerId}")
+    ResponseEntity<?> removeFileFromClient(@PathVariable String fileId,
+                                           @PathVariable String trackerId) {
+        clientService.removeFileFromClient(fileId, trackerId);
+        return ResponseEntity.ok("Removed");
+    }
+
     @GetMapping("{fileId}/{partId}")
     String downloadPart(@PathVariable String fileId,
                         @PathVariable int partId) {
