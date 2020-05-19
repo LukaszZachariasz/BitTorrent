@@ -4,8 +4,9 @@ import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.client.RestTemplate;
+import util.RegisterTorrentRq;
+import util.Torrent;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,9 +20,17 @@ public class ClientToTrackerConnector {
 
     private final RestTemplate restTemplate;
 
-    public ClientToTrackerConnector(RestTemplateBuilder restTemplateBuilder) {
+
+    public ClientToTrackerConnector(RestTemplateBuilder restTemplateBuilder, List<String> trackersIps) {
         this.restTemplate = restTemplateBuilder.build();
-        this.trackerList = new ArrayList<>();
+        this.trackerList = trackersIps;
+    }
+
+    public void registerTorrent(Torrent torrent) {
+        RegisterTorrentRq registerTorrentRq = new RegisterTorrentRq();
+        registerTorrentRq.setFileId(torrent.getFileId());
+        HttpEntity<RegisterTorrentRq> httpEntity = new HttpEntity<>(registerTorrentRq);
+        trackerList.forEach(s -> restTemplate.exchange(s + "/register", HttpMethod.POST, httpEntity, String.class));
     }
 
     public List<String> clientOwnersForFileId(String fileId) {
@@ -49,5 +58,9 @@ public class ClientToTrackerConnector {
 
     private String prepareRemoveFileFromClientUrl(String fileId, String trackerId, String myClientIp) {
         return "NOT YET IMPLEMENTED";
+    }
+
+    public List<String> getTrackerList() {
+        return trackerList;
     }
 }

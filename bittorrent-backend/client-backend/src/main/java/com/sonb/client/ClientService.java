@@ -1,6 +1,5 @@
 package com.sonb.client;
 
-import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.stereotype.Service;
 import util.*;
 
@@ -23,9 +22,10 @@ public class ClientService {
 
     private final ClientToTrackerConnector clientToTrackerConnector;
 
-    public ClientService(RestTemplateBuilder restTemplateBuilder) {
-        this.clientToTrackerConnector = new ClientToTrackerConnector(restTemplateBuilder);
+    public ClientService(ClientToTrackerConnector clientToTrackerConnector) {
+        this.clientToTrackerConnector = clientToTrackerConnector;
     }
+
 
     public Integer getSleepValue() {
         return sleepValue;
@@ -40,8 +40,11 @@ public class ClientService {
         String fileId = UUID.randomUUID().toString();
         torrent.setFileId(fileId);
         torrent.setHumanName(clientFileRequest.getHumanName());
-        torrent.setTrackerIps(trackerIpList);
-        fileIdToFile.put(fileId, createFile(clientFileRequest));
+        torrent.setTrackerIps(clientToTrackerConnector.getTrackerList());
+        File file = createFile(clientFileRequest);
+        torrent.setPieceNumbers(file.getFileSize());
+        fileIdToFile.put(fileId, file);
+        clientToTrackerConnector.registerTorrent(torrent);
         return torrent;
     }
 
