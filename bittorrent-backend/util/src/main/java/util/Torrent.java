@@ -1,6 +1,5 @@
 package util;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,8 +18,14 @@ public class Torrent {
 
     List<String> trackerIps;
 
-    //FIXME: not needed in torrent registration in tracker
-    List<TrackerInfo> trackerInfoList = new ArrayList<>();
+
+    public String getFileId() {
+        return fileId;
+    }
+
+    public void setFileId(String fileId) {
+        this.fileId = fileId;
+    }
 
     public String getHumanName() {
         return humanName;
@@ -34,28 +39,8 @@ public class Torrent {
         return pieceNumbers;
     }
 
-    public String getFileId() {
-        return fileId;
-    }
-
-    public void setFileId(String fileId) {
-        this.fileId = fileId;
-    }
-
-    public int getNumberOfParts() {
-        return pieceNumbers;
-    }
-
     public void setPieceNumbers(int pieceNumbers) {
         this.pieceNumbers = pieceNumbers;
-    }
-
-    public List<TrackerInfo> getTrackerInfoList() {
-        return trackerInfoList;
-    }
-
-    public void setTrackerInfoList(List<TrackerInfo> trackerInfoList) {
-        this.trackerInfoList = trackerInfoList;
     }
 
     public List<String> getTrackerIps() {

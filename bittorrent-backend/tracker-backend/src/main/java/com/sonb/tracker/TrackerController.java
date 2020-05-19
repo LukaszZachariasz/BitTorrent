@@ -3,7 +3,7 @@ package com.sonb.tracker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import util.Torrent;
+import util.RegisterTorrentRq;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -24,9 +24,9 @@ public class TrackerController {
     }
 
     @PostMapping("register")
-    ResponseEntity<?> registerTorrent(@RequestBody Torrent torrent,
-                                      @RequestParam String clientIp) {
-        trackerService.registerTorrent(torrent, clientIp);
+    ResponseEntity<?> registerTorrent(@RequestBody RegisterTorrentRq registerTorrentRq,
+                                      HttpServletRequest request) {
+        trackerService.registerTorrent(registerTorrentRq, request.getRequestURL().toString());
         return ResponseEntity.ok("TEST_OK_REGISTER");
     }
 

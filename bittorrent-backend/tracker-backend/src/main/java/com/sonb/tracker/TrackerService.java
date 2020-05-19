@@ -2,8 +2,7 @@ package com.sonb.tracker;
 
 import org.springframework.stereotype.Service;
 import util.Client;
-import util.PartStatus;
-import util.Torrent;
+import util.RegisterTorrentRq;
 import util.TrackerStatus;
 
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * @author Łukasz Zachariasz
@@ -40,18 +38,13 @@ public class TrackerService {
                 .collect(Collectors.toList());
     }
 
-    public void registerTorrent(Torrent torrent, String clientIp) {
-        fileIdToClients.put(torrent.getFileId(), generateFirstClient(torrent, clientIp));
+    public void registerTorrent(RegisterTorrentRq registerTorrentRq, String clientIp) {
+        fileIdToClients.put(registerTorrentRq.getFileId(), generateFirstClient(registerTorrentRq, clientIp));
     }
 
-    private List<Client> generateFirstClient(Torrent torrent, String clientIp) {
+    private List<Client> generateFirstClient(RegisterTorrentRq registerTorrentRq, String clientIp) {
         Client client = new Client();
         client.setClientIp(clientIp);
-        client.setNumbersOfParts(torrent.getNumberOfParts());
-
-        Map<Integer, PartStatus> collect = IntStream.iterate(0, operand -> operand < torrent.getNumberOfParts(), operand -> operand++)
-                .mapToObj(value -> value)
-                .collect(Collectors.toMap(o -> o, __ -> PartStatus.DOWNLOADED));
 
         return new ArrayList<>() {{
             add(client);

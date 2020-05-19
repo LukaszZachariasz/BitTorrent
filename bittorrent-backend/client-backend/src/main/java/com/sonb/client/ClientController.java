@@ -23,7 +23,7 @@ public class ClientController {
         this.clientService = clientService;
     }
 
-    @PostMapping
+    @PostMapping("create")
     ResponseEntity<Torrent> createTorrent(@RequestBody ClientFileRequest clientFileRequest) {
         Torrent torrent = clientService.createTorrent(clientFileRequest);
         return ResponseEntity.ok(torrent);
