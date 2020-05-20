@@ -24,9 +24,8 @@ public class TrackerController {
     }
 
     @PostMapping("register")
-    ResponseEntity<?> registerTorrent(@RequestBody RegisterTorrentRq registerTorrentRq,
-                                      HttpServletRequest request) {
-        trackerService.registerTorrent(registerTorrentRq, request.getRequestURL().toString());
+    ResponseEntity<?> registerTorrent(@RequestBody RegisterTorrentRq registerTorrentRq) {
+        trackerService.registerTorrent(registerTorrentRq);
         return ResponseEntity.ok("TEST_OK_REGISTER");
     }
 
