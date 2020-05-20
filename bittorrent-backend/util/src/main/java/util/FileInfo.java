@@ -13,6 +13,8 @@ public class FileInfo {
 
     String humanName;
 
+    FileExistenceStatus fileExistenceStatus;
+
     Map<Integer, PartContentStatus> partIdToPartContent;
 
 
@@ -46,5 +48,13 @@ public class FileInfo {
 
     public void setPartIdToPartContent(Map<Integer, PartContentStatus> partIdToPartContent) {
         this.partIdToPartContent = partIdToPartContent;
+    }
+
+    public FileExistenceStatus getFileExistenceStatus() {
+        return fileExistenceStatus;
+    }
+
+    public void setFileExistenceStatus(FileExistenceStatus fileExistenceStatus) {
+        this.fileExistenceStatus = fileExistenceStatus;
     }
 }

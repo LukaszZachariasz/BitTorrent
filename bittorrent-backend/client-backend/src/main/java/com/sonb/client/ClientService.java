@@ -21,9 +21,12 @@ public class ClientService {
     private Integer sleepValue = 50;
 
     private final ClientToTrackerConnector clientToTrackerConnector;
+    private final ClientToClientConnector clientToClientConnector;
 
-    public ClientService(ClientToTrackerConnector clientToTrackerConnector) {
+    public ClientService(ClientToTrackerConnector clientToTrackerConnector,
+                         ClientToClientConnector clientToClientConnector) {
         this.clientToTrackerConnector = clientToTrackerConnector;
+        this.clientToClientConnector = clientToClientConnector;
     }
 
 
@@ -52,7 +55,7 @@ public class ClientService {
         var file = new File();
         file.setHumanName(clientFileRequest.getHumanName());
         file.setFileSize(clientFileRequest.getValue().size());
-
+        file.setFileExistenceStatus(FileExistenceStatus.EXISTING);
         AtomicInteger atomicInteger = new AtomicInteger(0);
 
         file.setPartIdToPartContent(clientFileRequest.getValue()
@@ -117,6 +120,7 @@ public class ClientService {
         File file = idWithFile.getValue();
         fileInfo.setHumanName(file.getHumanName());
         fileInfo.setFileSize(file.getFileSize());
+        fileInfo.setFileExistenceStatus(file.getFileExistenceStatus());
         fileInfo.setPartIdToPartContent(map(file.getPartIdToPartContent()));
         return fileInfo;
     }
@@ -125,6 +129,25 @@ public class ClientService {
         return idToPartContent.entrySet().stream()
                 .map(integerPartContentEntry -> new AbstractMap.SimpleEntry<>(integerPartContentEntry.getKey(), integerPartContentEntry.getValue().getPartContentStatus()))
                 .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+    }
+
+    //FIXME: run in thread
+    public void downloadFile(Torrent torrent) {
+        System.out.println("Client as owners of file assigned in torrent file:");
+        List<String> clientIps = clientToTrackerConnector.clientOwnersForFileId(torrent.getFileId());
+
+        if (clientIps.size() == 0) {
+            fileIdToFile.put(torrent.getFileId(), createNotExistingFile(torrent));
+        }
+    }
+
+    private File createNotExistingFile(Torrent torrent) {
+        File file = new File();
+        file.setHumanName(torrent.getHumanName());
+        file.setFileExistenceStatus(FileExistenceStatus.NON_EXISTING);
+        file.setPartIdToPartContent(new HashMap<>());
+        file.setFileSize(torrent.getPieceNumbers());
+        return file;
     }
 
 }

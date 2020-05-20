@@ -31,7 +31,7 @@ public class TrackerService {
     }
 
     public List<String> getClients(String fileId) {
-        return fileIdToClients.get(fileId)
+        return fileIdToClients.getOrDefault(fileId, new ArrayList<>())
                 .stream()
                 .map(Client::getClientIp)
                 .collect(Collectors.toList());
