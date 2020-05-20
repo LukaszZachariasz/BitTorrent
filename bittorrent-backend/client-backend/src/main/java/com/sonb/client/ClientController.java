@@ -58,5 +58,10 @@ public class ClientController {
         return ResponseEntity.ok("Changed sleep value to:" + sleepValue);
     }
 
+    @GetMapping("allPartIdWithStatuses")
+    List<?> allPartIdWithStatuses() {
+        return clientService.allPartIdWithStatuses();
+    }
+
 }
 

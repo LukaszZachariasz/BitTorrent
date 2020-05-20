@@ -12,7 +12,7 @@ public class Client {
 
     int numbersOfParts;
 
-    Map<Integer, PartStatus> partIdToStatus;
+    Map<Integer, PartContentStatus> partIdToStatus;
 
 
     public String getClientIp() {
@@ -31,11 +31,11 @@ public class Client {
         this.numbersOfParts = numbersOfParts;
     }
 
-    public Map<Integer, PartStatus> getPartIdToStatus() {
+    public Map<Integer, PartContentStatus> getPartIdToStatus() {
         return partIdToStatus;
     }
 
-    public void setPartIdToStatus(Map<Integer, PartStatus> partIdToStatus) {
+    public void setPartIdToStatus(Map<Integer, PartContentStatus> partIdToStatus) {
         this.partIdToStatus = partIdToStatus;
     }
 }
