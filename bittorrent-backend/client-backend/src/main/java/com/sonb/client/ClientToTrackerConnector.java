@@ -50,7 +50,7 @@ public class ClientToTrackerConnector {
     }
 
     private String createGetClientsUrl(String trackerUrl, String fileId) {
-        return null;
+        return trackerUrl + "/clients/" + fileId;
     }
 
     @SuppressWarnings("unchecked")
@@ -68,7 +68,7 @@ public class ClientToTrackerConnector {
     }
 
     private String fetchClientIp() {
-        InetAddress ip = null;
+        InetAddress ip;
         try {
             ip = InetAddress.getLocalHost();
         } catch (UnknownHostException e) {

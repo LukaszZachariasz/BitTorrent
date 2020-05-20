@@ -14,6 +14,8 @@ public class File {
 
     Map<Integer, PartContent> partIdToPartContent;
 
+    FileExistenceStatus fileExistenceStatus;
+
 
     public String getHumanName() {
         return humanName;
@@ -40,11 +42,18 @@ public class File {
     }
 
     String getFileContent() {
-        return partIdToPartContent.entrySet()
+        return partIdToPartContent.values()
                 .stream()
-                .map(Map.Entry::getValue)
                 .map(partContent -> partContent.data)
                 .reduce(String::concat)
                 .orElseThrow(() -> new IllegalStateException("File is empty!"));
+    }
+
+    public FileExistenceStatus getFileExistenceStatus() {
+        return fileExistenceStatus;
+    }
+
+    public void setFileExistenceStatus(FileExistenceStatus fileExistenceStatus) {
+        this.fileExistenceStatus = fileExistenceStatus;
     }
 }

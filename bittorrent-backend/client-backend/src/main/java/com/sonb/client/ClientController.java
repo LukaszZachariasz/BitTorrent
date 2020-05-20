@@ -58,6 +58,12 @@ public class ClientController {
         return ResponseEntity.ok("Changed sleep value to:" + sleepValue);
     }
 
+    @PostMapping("downloadFile")
+    ResponseEntity<?> downloadFile(@RequestBody Torrent torrent) {
+        clientService.downloadFile(torrent);
+        return ResponseEntity.ok("Download started");
+    }
+
     @GetMapping("allPartIdWithStatuses")
     List<?> allPartIdWithStatuses() {
         return clientService.allPartIdWithStatuses();

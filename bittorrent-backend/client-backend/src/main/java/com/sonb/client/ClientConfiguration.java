@@ -28,6 +28,18 @@ public class ClientConfiguration {
         return new ClientToTrackerConnector(restTemplateBuilder, trackersIps);
     }
 
+    @Bean
+    ClientToClientConnector clientToClientConnector(RestTemplateBuilder restTemplateBuilder,
+                                                    @Value("${trackerUrlPrefix:http://localhost:808}") String urlPrefix,
+                                                    @Value("${trackersNumber:1}") int trackerNumer) {
+
+        List<String> trackersIps = IntStream.range(1, trackerNumer + 1)
+                .mapToObj(value -> createTrackerUrl(value, urlPrefix))
+                .collect(Collectors.toList());
+
+        return new ClientToClientConnector(restTemplateBuilder, trackersIps);
+    }
+
     private String createTrackerUrl(int number, String trackerUrlPrefix) {
         if (trackerUrlPrefix.contains("localhost")) {
             return trackerUrlPrefix + number;
