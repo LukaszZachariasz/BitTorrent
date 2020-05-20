@@ -5,5 +5,5 @@ package util;
  */
 
 public enum PartContentStatus {
-    EXISTING, NON_EXISTING;
+    EXISTING, WAITING_FOR_DOWNLOAD;
 }
