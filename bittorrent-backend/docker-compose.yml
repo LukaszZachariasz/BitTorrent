@@ -1,8 +1,22 @@
 version: '3.6'
 
 services:
+  client1:
+    container_name: client1
+    hostname: client1
+    build:
+      context: client-backend
+      dockerfile: Dockerfile
+      args:
+        - PORT=8091
+        - TRACKER_PREFIX=http://tracker
+    ports:
+      - 8091:8091
+    networks:
+      - network
   tracker1:
     container_name: tracker1
+    hostname: tracker1
     build:
       context: tracker-backend
       dockerfile: Dockerfile
@@ -12,39 +26,28 @@ services:
       - 8081:8081
     networks:
       - network
-  tracker2:
-    container_name: tracker2
-    build:
-      context: tracker-backend
-      dockerfile: Dockerfile
-      args:
-        - PORT=8082
-    ports:
-      - 8082:8082
-    networks:
-      - network
-  tracker3:
-    container_name: tracker3
-    build:
-      context: tracker-backend
-      dockerfile: Dockerfile
-      args:
-        - PORT=8083
-    ports:
-      - 8083:8083
-    networks:
-      - network
-  client1:
-    container_name: client1
-    build:
-      context: client-backend
-      dockerfile: Dockerfile
-      args:
-        - PORT=8091
-    ports:
-      - 8091:8091
-    networks:
-      - network
+#  tracker2:
+#    container_name: tracker2
+#    build:
+#      context: tracker-backend
+#      dockerfile: Dockerfile
+#      args:
+#        - PORT=8082
+#    ports:
+#      - 8082:8082
+#    networks:
+#      - network
+#  tracker3:
+#    container_name: tracker3
+#    build:
+#      context: tracker-backend
+#      dockerfile: Dockerfile
+#      args:
+#        - PORT=8083
+#    ports:
+#      - 8083:8083
+#    networks:
+#      - network
 #  client2:
 #    container_name: client2
 #    build:

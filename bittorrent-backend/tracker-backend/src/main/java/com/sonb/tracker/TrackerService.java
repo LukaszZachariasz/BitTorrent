@@ -38,13 +38,13 @@ public class TrackerService {
                 .collect(Collectors.toList());
     }
 
-    public void registerTorrent(RegisterTorrentRq registerTorrentRq, String clientIp) {
-        fileIdToClients.put(registerTorrentRq.getFileId(), generateFirstClient(registerTorrentRq, clientIp));
+    public void registerTorrent(RegisterTorrentRq registerTorrentRq) {
+        fileIdToClients.put(registerTorrentRq.getFileId(), generateFirstClient(registerTorrentRq));
     }
 
-    private List<Client> generateFirstClient(RegisterTorrentRq registerTorrentRq, String clientIp) {
+    private List<Client> generateFirstClient(RegisterTorrentRq registerTorrentRq) {
         Client client = new Client();
-        client.setClientIp(clientIp);
+        client.setClientIp(registerTorrentRq.getClientIp());
 
         return new ArrayList<>() {{
             add(client);

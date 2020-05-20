@@ -1,5 +1,6 @@
 package com.sonb.client;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -7,6 +8,8 @@ import org.springframework.web.client.RestTemplate;
 import util.RegisterTorrentRq;
 import util.Torrent;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -15,6 +18,9 @@ import java.util.stream.Collectors;
  */
 
 public class ClientToTrackerConnector {
+
+    @Value("${server.port}")
+    private String serverPort;
 
     private final List<String> trackerList;
 
@@ -29,6 +35,7 @@ public class ClientToTrackerConnector {
     public void registerTorrent(Torrent torrent) {
         RegisterTorrentRq registerTorrentRq = new RegisterTorrentRq();
         registerTorrentRq.setFileId(torrent.getFileId());
+        registerTorrentRq.setClientIp(fetchClientIp());
         HttpEntity<RegisterTorrentRq> httpEntity = new HttpEntity<>(registerTorrentRq);
         trackerList.forEach(s -> restTemplate.exchange(s + "/register", HttpMethod.POST, httpEntity, String.class));
     }
@@ -58,6 +65,19 @@ public class ClientToTrackerConnector {
 
     private String prepareRemoveFileFromClientUrl(String fileId, String trackerId, String myClientIp) {
         return "NOT YET IMPLEMENTED";
+    }
+
+    private String fetchClientIp() {
+        InetAddress ip = null;
+        try {
+            ip = InetAddress.getLocalHost();
+        } catch (UnknownHostException e) {
+            throw new RuntimeException(e);
+        }
+        String parsedIp = "http://" + ip.getHostName() + ":" + serverPort;
+        System.out.println("My IP: " + parsedIp);
+
+        return parsedIp;
     }
 
     public List<String> getTrackerList() {

@@ -7,6 +7,16 @@ public class RegisterTorrentRq {
 
     String fileId;
 
+    String clientIp;
+
+    public String getClientIp() {
+        return clientIp;
+    }
+
+    public void setClientIp(String clientIp) {
+        this.clientIp = clientIp;
+    }
+
     public String getFileId() {
         return fileId;
     }

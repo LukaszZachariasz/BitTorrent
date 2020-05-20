@@ -18,14 +18,22 @@ public class ClientConfiguration {
 
     @Bean
     ClientToTrackerConnector clientToTrackerConnector(RestTemplateBuilder restTemplateBuilder,
-                                                      @Value("${trackersNumber:http://localhost:808}") String urlPrefix,
+                                                      @Value("${trackerUrlPrefix:http://localhost:808}") String urlPrefix,
                                                       @Value("${trackersNumber:1}") int trackerNumber) {
 
         List<String> trackersIps = IntStream.range(1, trackerNumber + 1)
-                .mapToObj(value -> urlPrefix + value)
+                .mapToObj(value -> createTrackerUrl(value, urlPrefix))
                 .collect(Collectors.toList());
 
         return new ClientToTrackerConnector(restTemplateBuilder, trackersIps);
+    }
+
+    private String createTrackerUrl(int number, String trackerUrlPrefix) {
+        if (trackerUrlPrefix.contains("localhost")) {
+            return trackerUrlPrefix + number;
+        } else {
+            return trackerUrlPrefix + number + ":808" + number;
+        }
     }
 
 }
