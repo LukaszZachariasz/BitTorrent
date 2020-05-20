@@ -103,4 +103,28 @@ public class ClientService {
     private String fetchMyIp() {
         return "NOT YET IMPLEMENTED";
     }
+
+    public List<FileInfo> allPartIdWithStatuses() {
+        return fileIdToFile.entrySet().stream()
+                .map(this::mapFileToFileInfo)
+                .collect(Collectors.toList());
+    }
+
+
+    public FileInfo mapFileToFileInfo(Map.Entry<String, File> idWithFile) {
+        FileInfo fileInfo = new FileInfo();
+        fileInfo.setTorrentId(idWithFile.getKey());
+        File file = idWithFile.getValue();
+        fileInfo.setHumanName(file.getHumanName());
+        fileInfo.setFileSize(file.getFileSize());
+        fileInfo.setPartIdToPartContent(map(file.getPartIdToPartContent()));
+        return fileInfo;
+    }
+
+    public Map<Integer, PartContentStatus> map(Map<Integer, PartContent> idToPartContent) {
+        return idToPartContent.entrySet().stream()
+                .map(integerPartContentEntry -> new AbstractMap.SimpleEntry<>(integerPartContentEntry.getKey(), integerPartContentEntry.getValue().getPartContentStatus()))
+                .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
+    }
+
 }

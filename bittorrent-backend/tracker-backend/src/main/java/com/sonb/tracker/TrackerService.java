@@ -18,7 +18,6 @@ import java.util.stream.Collectors;
 @Service
 public class TrackerService {
 
-
     private final TrackerStatus trackerStatus = TrackerStatus.UP;
 
     private final List<String> clientsList;
