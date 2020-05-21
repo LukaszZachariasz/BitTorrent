@@ -18,8 +18,8 @@ public class ClientConfiguration {
 
     @Bean
     ClientToTrackerConnector clientToTrackerConnector(RestTemplateBuilder restTemplateBuilder,
-                                                      @Value("${trackerUrlPrefix:http://localhost:808}") String urlPrefix,
-                                                      @Value("${trackersNumber:1}") int trackerNumber) {
+                                                      @Value("${trackerUrlPrefix:http://localhost:700}") String urlPrefix,
+                                                      @Value("${trackersNumber:3}") int trackerNumber) {
 
         List<String> trackersIps = IntStream.range(1, trackerNumber + 1)
                 .mapToObj(value -> createTrackerUrl(value, urlPrefix))
@@ -30,10 +30,10 @@ public class ClientConfiguration {
 
     @Bean
     ClientToClientConnector clientToClientConnector(RestTemplateBuilder restTemplateBuilder,
-                                                    @Value("${trackerUrlPrefix:http://localhost:808}") String urlPrefix,
-                                                    @Value("${trackersNumber:1}") int trackerNumer) {
+                                                    @Value("${trackerUrlPrefix:http://localhost:700}") String urlPrefix,
+                                                    @Value("${trackersNumber:3}") int trackerNumber) {
 
-        List<String> trackersIps = IntStream.range(1, trackerNumer + 1)
+        List<String> trackersIps = IntStream.range(1, trackerNumber + 1)
                 .mapToObj(value -> createTrackerUrl(value, urlPrefix))
                 .collect(Collectors.toList());
 
@@ -44,7 +44,7 @@ public class ClientConfiguration {
         if (trackerUrlPrefix.contains("localhost")) {
             return trackerUrlPrefix + number;
         } else {
-            return trackerUrlPrefix + number + ":808" + number;
+            return trackerUrlPrefix + number + ":700" + number;
         }
     }
 

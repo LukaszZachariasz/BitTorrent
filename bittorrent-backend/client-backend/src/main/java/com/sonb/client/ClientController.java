@@ -49,12 +49,12 @@ public class ClientController {
 
     @GetMapping("sleep")
     Integer getSleepValue() {
-        return clientService.getSleepValue();
+        return clientService.getSimulatedDownloadDelay();
     }
 
     @GetMapping("changeSleep/{sleepValue}")
     ResponseEntity<?> postSleepValue(@PathVariable Integer sleepValue) {
-        clientService.setSleepValue(sleepValue);
+        clientService.setSimulatedDownloadDelay(sleepValue);
         return ResponseEntity.ok("Changed sleep value to:" + sleepValue);
     }
 

@@ -1,19 +1,6 @@
 version: '3.6'
 
 services:
-  client1:
-    container_name: client1
-    hostname: client1
-    build:
-      context: client-backend
-      dockerfile: Dockerfile
-      args:
-        - PORT=8091
-        - TRACKER_PREFIX=http://tracker
-    ports:
-      - 8091:8091
-    networks:
-      - network
   tracker1:
     container_name: tracker1
     hostname: tracker1
@@ -21,121 +8,87 @@ services:
       context: tracker-backend
       dockerfile: Dockerfile
       args:
-        - PORT=8081
+        - PORT=7001
     ports:
-      - 8081:8081
+      - 7001:7001
     networks:
       - network
-#  tracker2:
-#    container_name: tracker2
-#    build:
-#      context: tracker-backend
-#      dockerfile: Dockerfile
-#      args:
-#        - PORT=8082
-#    ports:
-#      - 8082:8082
-#    networks:
-#      - network
-#  tracker3:
-#    container_name: tracker3
-#    build:
-#      context: tracker-backend
-#      dockerfile: Dockerfile
-#      args:
-#        - PORT=8083
-#    ports:
-#      - 8083:8083
-#    networks:
-#      - network
-#  client2:
-#    container_name: client2
-#    build:
-#      context: client-backend
-#      dockerfile: Dockerfile
-#      args:
-#        - PORT=8092
-#    ports:
-#      - 8092:8092
-#    networks:
-#      - network
-#  client3:
-#    container_name: client3
-#    build:
-#      context: client-backend
-#      dockerfile: Dockerfile
-#      args:
-#        - PORT=8093
-#    ports:
-#      - 8093:8093
-#    networks:
-#      - network
-#  client4:
-#    container_name: client4
-#    build:
-#      context: client-backend
-#      dockerfile: Dockerfile
-#      args:
-#        - PORT=8094
-#    ports:
-#      - 8094:8094
-#    networks:
-#      - network
-#  client5:
-#    container_name: client5
-#    build:
-#      context: client-backend
-#      dockerfile: Dockerfile
-#      args:
-#        - PORT=8095
-#    ports:
-#      - 8095:8095
-#    networks:
-#      - network
-#  client6:
-#    container_name: client6
-#    build:
-#      context: client-backend
-#      dockerfile: Dockerfile
-#      args:
-#        - PORT=8096
-#    ports:
-#      - 8096:8096
-#    networks:
-#      - network
-#  client7:
-#    container_name: client7
-#    build:
-#      context: client-backend
-#      dockerfile: Dockerfile
-#      args:
-#        - PORT=8097
-#    ports:
-#      - 8097:8097
-#    networks:
-#      - network
-#  client8:
-#    container_name: client8
-#    build:
-#      context: client-backend
-#      dockerfile: Dockerfile
-#      args:
-#        - PORT=8098
-#    ports:
-#      - 8098:8098
-#    networks:
-#      - network
-#  client9:
-#    container_name: client9
-#    build:
-#      context: client-backend
-#      dockerfile: Dockerfile
-#      args:
-#        - PORT=8099
-#    ports:
-#      - 8099:8099
-#    networks:
-#      - network
+  tracker2:
+    container_name: tracker2
+    hostname: tracker2
+    build:
+      context: tracker-backend
+      dockerfile: Dockerfile
+      args:
+        - PORT=7002
+    ports:
+      - 7002:7002
+    networks:
+      - network
+  tracker3:
+    container_name: tracker3
+    hostname: tracker3
+    build:
+      context: tracker-backend
+      dockerfile: Dockerfile
+      args:
+        - PORT=7003
+    ports:
+      - 7003:7003
+    networks:
+      - network
+  client1:
+    container_name: client1
+    hostname: client1
+    build:
+      context: client-backend
+      dockerfile: Dockerfile
+      args:
+        - PORT=6001
+        - TRACKER_PREFIX=http://tracker
+    ports:
+      - 6001:6001
+    networks:
+      - network
+  client2:
+    container_name: client2
+    hostname: client2
+    build:
+      context: client-backend
+      dockerfile: Dockerfile
+      args:
+        - PORT=6002
+        - TRACKER_PREFIX=http://tracker
+    ports:
+      - 6002:6002
+    networks:
+      - network
+  client3:
+    container_name: client3
+    hostname: client3
+    build:
+      context: client-backend
+      dockerfile: Dockerfile
+      args:
+        - PORT=6003
+        - TRACKER_PREFIX=http://tracker
+    ports:
+      - 6003:6003
+    networks:
+      - network
+  client4:
+    container_name: client4
+    hostname: client4
+    build:
+      context: client-backend
+      dockerfile: Dockerfile
+      args:
+        - PORT=6004
+        - TRACKER_PREFIX=http://tracker
+    ports:
+      - 6004:6004
+    networks:
+      - network
 
 networks:
   network:

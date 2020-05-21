@@ -42,8 +42,7 @@ public class TrackerService {
     }
 
     private List<Client> generateFirstClient(RegisterTorrentRq registerTorrentRq) {
-        Client client = new Client();
-        client.setClientIp(registerTorrentRq.getClientIp());
+        Client client = new Client(registerTorrentRq.getClientIp());
 
         return new ArrayList<>() {{
             add(client);
@@ -53,6 +52,10 @@ public class TrackerService {
     public void removeFileFromClient(String fileId, String clientIp) {
         List<Client> clients = fileIdToClients.get(fileId);
         clients.removeIf(client -> client.getClientIp().equals(clientIp));
+    }
+
+    public void registerFileOwnerClient(String fileId, String clientIp) {
+        fileIdToClients.get(fileId).add(new Client(clientIp));
     }
 
 }

@@ -56,4 +56,16 @@ public class File {
     public void setFileExistenceStatus(FileExistenceStatus fileExistenceStatus) {
         this.fileExistenceStatus = fileExistenceStatus;
     }
+
+    public void checkIsCompleteFileDownloaded() {
+        if (isFileComplete())
+            fileExistenceStatus = FileExistenceStatus.DOWNLOADED;
+    }
+
+    private boolean isFileComplete() {
+        return partIdToPartContent
+                .values()
+                .stream()
+                .allMatch(el -> el.getPartContentStatus().equals(PartContentStatus.EXISTING));
+    }
 }
