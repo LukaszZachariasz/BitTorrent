@@ -23,13 +23,13 @@ public class TrackerController {
         this.trackerService = trackerService;
     }
 
-    @PostMapping("register")
+    @PostMapping("registerTorrent")
     ResponseEntity<?> registerTorrent(@RequestBody RegisterTorrentRq registerTorrentRq) {
         trackerService.registerTorrent(registerTorrentRq);
         return ResponseEntity.ok("TEST_OK_REGISTER");
     }
 
-    @DeleteMapping("{fileId}")
+    @DeleteMapping("remove/{fileId}")
     ResponseEntity<?> removeFileFromClient(@PathVariable String fileId, HttpServletRequest request) {
         trackerService.removeFileFromClient(fileId, request.getRequestURL().toString());
 
@@ -39,5 +39,11 @@ public class TrackerController {
     @GetMapping("clients/{fileId}")
     List<String> getClients(@PathVariable String fileId) {
         return trackerService.getClients(fileId);
+    }
+
+    @GetMapping("registerFileOwner/{fileId}")
+    public ResponseEntity<?> registerFileOwnerClient(@PathVariable String fileId, @RequestParam String clientIp) {
+        trackerService.registerFileOwnerClient(fileId, clientIp);
+        return ResponseEntity.ok("Registered");
     }
 }

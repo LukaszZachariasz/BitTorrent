@@ -6,6 +6,7 @@ import util.*;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * @author Łukasz Zachariasz
@@ -18,24 +19,26 @@ public class ClientService {
 
     private final Map<String, File> fileIdToFile = new HashMap<>();
 
-    private Integer sleepValue = 50;
+    private Integer simulatedDownloadDelay = 5000; // five sec. delay for download part of file
 
     private final ClientToTrackerConnector clientToTrackerConnector;
     private final ClientToClientConnector clientToClientConnector;
+    private final FileDownloader fileDownloader;
 
     public ClientService(ClientToTrackerConnector clientToTrackerConnector,
                          ClientToClientConnector clientToClientConnector) {
         this.clientToTrackerConnector = clientToTrackerConnector;
         this.clientToClientConnector = clientToClientConnector;
+        this.fileDownloader = new FileDownloader(clientToClientConnector);
     }
 
 
-    public Integer getSleepValue() {
-        return sleepValue;
+    public Integer getSimulatedDownloadDelay() {
+        return simulatedDownloadDelay;
     }
 
-    public void setSleepValue(Integer sleepValue) {
-        this.sleepValue = sleepValue;
+    public void setSimulatedDownloadDelay(Integer simulatedDownloadDelay) {
+        this.simulatedDownloadDelay = simulatedDownloadDelay;
     }
 
     public Torrent createTorrent(ClientFileRequest clientFileRequest) {
@@ -55,7 +58,7 @@ public class ClientService {
         var file = new File();
         file.setHumanName(clientFileRequest.getHumanName());
         file.setFileSize(clientFileRequest.getValue().size());
-        file.setFileExistenceStatus(FileExistenceStatus.EXISTING);
+        file.setFileExistenceStatus(FileExistenceStatus.DOWNLOADED);
         AtomicInteger atomicInteger = new AtomicInteger(0);
 
         file.setPartIdToPartContent(clientFileRequest.getValue()
@@ -92,7 +95,7 @@ public class ClientService {
 
     void sleep() {
         try {
-            Thread.sleep(sleepValue);
+            Thread.sleep(simulatedDownloadDelay);
         } catch (InterruptedException e) {
             throw new RuntimeException();
         }
@@ -131,7 +134,6 @@ public class ClientService {
                 .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
     }
 
-    //FIXME: run in thread
     public void downloadFile(Torrent torrent) {
         System.out.println("Client as owners of file assigned in torrent file:");
         List<String> clientIps = clientToTrackerConnector.clientOwnersForFileId(torrent.getFileId());
@@ -139,6 +141,26 @@ public class ClientService {
         if (clientIps.size() == 0) {
             fileIdToFile.put(torrent.getFileId(), createNotExistingFile(torrent));
         }
+
+        File notCompletedFile = createNotCompletedFile(torrent);
+        fileIdToFile.put(torrent.getFileId(), notCompletedFile);
+        clientToTrackerConnector.registerFileOwnerClient(torrent.getFileId());
+        fileDownloader.downloadFile(clientIps, torrent.getFileId(), notCompletedFile, simulatedDownloadDelay);
+    }
+
+    private File createNotCompletedFile(Torrent torrent) {
+        File file = new File();
+        file.setHumanName(torrent.getHumanName());
+        file.setFileExistenceStatus(FileExistenceStatus.NOT_COMPLETE);
+        file.setFileSize(torrent.getPieceNumbers());
+
+        Map<Integer, PartContent> partIdToPartContent = IntStream.range(0, torrent.getPieceNumbers())
+                .boxed()
+                .collect(Collectors.toMap(partId -> partId, __ -> PartContent.nonExistingPartContent()));
+
+        file.setPartIdToPartContent(partIdToPartContent);
+
+        return file;
     }
 
     private File createNotExistingFile(Torrent torrent) {
