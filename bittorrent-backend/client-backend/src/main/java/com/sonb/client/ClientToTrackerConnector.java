@@ -1,6 +1,5 @@
 package com.sonb.client;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
@@ -9,8 +8,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 import util.RegisterTorrentRq;
 import util.Torrent;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -20,23 +17,22 @@ import java.util.stream.Collectors;
 
 public class ClientToTrackerConnector {
 
-    @Value("${server.port}")
-    private String serverPort;
-
     private final List<String> trackerList;
 
     private final RestTemplate restTemplate;
 
+    private final IPFetcher ipFetcher;
 
-    public ClientToTrackerConnector(RestTemplateBuilder restTemplateBuilder, List<String> trackersIps) {
+    public ClientToTrackerConnector(List<String> trackerList, RestTemplateBuilder restTemplateBuilder, IPFetcher ipFetcher) {
+        this.trackerList = trackerList;
         this.restTemplate = restTemplateBuilder.build();
-        this.trackerList = trackersIps;
+        this.ipFetcher = ipFetcher;
     }
 
     public void registerTorrent(Torrent torrent) {
         RegisterTorrentRq registerTorrentRq = new RegisterTorrentRq();
         registerTorrentRq.setFileId(torrent.getFileId());
-        registerTorrentRq.setClientIp(fetchClientIp());
+        registerTorrentRq.setClientIp(ipFetcher.getClientIp());
         HttpEntity<RegisterTorrentRq> httpEntity = new HttpEntity<>(registerTorrentRq);
         trackerList.forEach(trackerUrl -> restTemplate.exchange(trackerUrl + "/registerTorrent", HttpMethod.POST, httpEntity, String.class));
     }
@@ -68,18 +64,6 @@ public class ClientToTrackerConnector {
         return "NOT YET IMPLEMENTED";
     }
 
-    private String fetchClientIp() {
-        InetAddress ip;
-        try {
-            ip = InetAddress.getLocalHost();
-        } catch (UnknownHostException e) {
-            throw new RuntimeException(e);
-        }
-        String parsedIp = "http://" + ip.getHostName() + ":" + serverPort;
-        System.out.println("My IP: " + parsedIp);
-
-        return parsedIp;
-    }
 
     public List<String> getTrackerList() {
         return trackerList;
@@ -95,7 +79,7 @@ public class ClientToTrackerConnector {
 
     private String createRegisterClientUrl(String trackerUrl, String fileId) {
         return UriComponentsBuilder.fromHttpUrl(trackerUrl + "/registerFileOwner/" + fileId)
-                .queryParam("clientIp", fetchClientIp())
+                .queryParam("clientIp", ipFetcher.getClientIp())
                 .build()
                 .toUriString();
     }

@@ -16,16 +16,19 @@ import java.util.stream.IntStream;
 @Configuration
 public class ClientConfiguration {
 
+    @Value("${server.port}")
+    Integer serverPort;
+
     @Bean
     ClientToTrackerConnector clientToTrackerConnector(RestTemplateBuilder restTemplateBuilder,
                                                       @Value("${trackerUrlPrefix:http://localhost:700}") String urlPrefix,
-                                                      @Value("${trackersNumber:3}") int trackerNumber) {
+                                                      @Value("${trackersNumber:1}") int trackerNumber) {
 
         List<String> trackersIps = IntStream.range(1, trackerNumber + 1)
                 .mapToObj(value -> createTrackerUrl(value, urlPrefix))
                 .collect(Collectors.toList());
 
-        return new ClientToTrackerConnector(restTemplateBuilder, trackersIps);
+        return new ClientToTrackerConnector(trackersIps, restTemplateBuilder, new IPFetcher(serverPort));
     }
 
     @Bean
