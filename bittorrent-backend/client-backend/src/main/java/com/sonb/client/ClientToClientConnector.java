@@ -11,7 +11,6 @@ import java.util.List;
 
 public class ClientToClientConnector {
 
-
     private final List<String> trackerList;
 
     private final RestTemplate restTemplate;
