@@ -15,7 +15,7 @@ public class FileInfo {
 
     FileExistenceStatus fileExistenceStatus;
 
-    Map<Integer, PartContentStatus> partIdToPartContent;
+    Map<Integer, PartContestStatusWithClientSourceIp> partIdToPartContentWithClientSourceIp;
 
 
     public String getTorrentId() {
@@ -42,19 +42,19 @@ public class FileInfo {
         this.fileSize = fileSize;
     }
 
-    public Map<Integer, PartContentStatus> getPartIdToPartContent() {
-        return partIdToPartContent;
-    }
-
-    public void setPartIdToPartContent(Map<Integer, PartContentStatus> partIdToPartContent) {
-        this.partIdToPartContent = partIdToPartContent;
-    }
-
     public FileExistenceStatus getFileExistenceStatus() {
         return fileExistenceStatus;
     }
 
     public void setFileExistenceStatus(FileExistenceStatus fileExistenceStatus) {
         this.fileExistenceStatus = fileExistenceStatus;
+    }
+
+    public Map<Integer, PartContestStatusWithClientSourceIp> getPartIdToPartContentWithClientSourceIp() {
+        return partIdToPartContentWithClientSourceIp;
+    }
+
+    public void setPartIdToPartContentWithClientSourceIp(Map<Integer, PartContestStatusWithClientSourceIp> partIdToPartContentWithClientSourceIp) {
+        this.partIdToPartContentWithClientSourceIp = partIdToPartContentWithClientSourceIp;
     }
 }

@@ -8,6 +8,8 @@ public class PartContent {
 
     PartContentStatus partContentStatus;
 
+    String sourceClientIp;
+
     String data;
 
     public static PartContent nonExistingPartContent() {
@@ -18,10 +20,11 @@ public class PartContent {
         return partContent;
     }
 
-    public static PartContent of(PartContentStatus partContentStatus, String data) {
+    public static PartContent of(PartContentStatus partContentStatus, String data, String sourceClientIp) {
         PartContent partContent = new PartContent();
         partContent.setData(data);
         partContent.setPartContentStatus(partContentStatus);
+        partContent.setSourceClientIp(sourceClientIp);
 
         return partContent;
     }
@@ -40,5 +43,13 @@ public class PartContent {
 
     public void setData(String data) {
         this.data = data;
+    }
+
+    public String getSourceClientIp() {
+        return sourceClientIp;
+    }
+
+    public void setSourceClientIp(String sourceClientIp) {
+        this.sourceClientIp = sourceClientIp;
     }
 }
