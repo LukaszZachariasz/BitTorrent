@@ -21,12 +21,15 @@ public class ClientService {
 
     private Integer simulatedDownloadDelay = 5000; // five sec. delay for download part of file
 
+    private final IPFetcher ipFetcher;
     private final ClientToTrackerConnector clientToTrackerConnector;
     private final ClientToClientConnector clientToClientConnector;
     private final FileDownloader fileDownloader;
 
     public ClientService(ClientToTrackerConnector clientToTrackerConnector,
-                         ClientToClientConnector clientToClientConnector) {
+                         ClientToClientConnector clientToClientConnector,
+                         IPFetcher ipFetcher) {
+        this.ipFetcher = ipFetcher;
         this.clientToTrackerConnector = clientToTrackerConnector;
         this.clientToClientConnector = clientToClientConnector;
         this.fileDownloader = new FileDownloader(clientToClientConnector);
@@ -43,19 +46,23 @@ public class ClientService {
 
     public Torrent createTorrent(ClientFileRequest clientFileRequest) {
         Torrent torrent = new Torrent();
+
         String fileId = UUID.randomUUID().toString();
         torrent.setFileId(fileId);
         torrent.setHumanName(clientFileRequest.getHumanName());
         torrent.setTrackerIps(clientToTrackerConnector.getTrackerList());
+
         File file = createFile(clientFileRequest);
         torrent.setPieceNumbers(file.getFileSize());
         fileIdToFile.put(fileId, file);
         clientToTrackerConnector.registerTorrent(torrent);
+
         return torrent;
     }
 
     private File createFile(ClientFileRequest clientFileRequest) {
         var file = new File();
+
         file.setHumanName(clientFileRequest.getHumanName());
         file.setFileSize(clientFileRequest.getValue().size());
         file.setFileExistenceStatus(FileExistenceStatus.DOWNLOADED);
@@ -64,7 +71,7 @@ public class ClientService {
         file.setPartIdToPartContent(clientFileRequest.getValue()
                 .stream()
                 .collect(Collectors.toMap(s -> atomicInteger.getAndIncrement(),
-                        s -> PartContent.of(PartContentStatus.EXISTING, s))));
+                        s -> PartContent.of(PartContentStatus.EXISTING, s, ipFetcher.getClientIp()))));
 
         return file;
     }
@@ -119,18 +126,24 @@ public class ClientService {
 
     public FileInfo mapFileToFileInfo(Map.Entry<String, File> idWithFile) {
         FileInfo fileInfo = new FileInfo();
-        fileInfo.setTorrentId(idWithFile.getKey());
         File file = idWithFile.getValue();
+
+        fileInfo.setTorrentId(idWithFile.getKey());
         fileInfo.setHumanName(file.getHumanName());
         fileInfo.setFileSize(file.getFileSize());
         fileInfo.setFileExistenceStatus(file.getFileExistenceStatus());
-        fileInfo.setPartIdToPartContent(map(file.getPartIdToPartContent()));
+        fileInfo.setPartIdToPartContentWithClientSourceIp(map(file.getPartIdToPartContent()));
+
         return fileInfo;
     }
 
-    public Map<Integer, PartContentStatus> map(Map<Integer, PartContent> idToPartContent) {
+    public Map<Integer, PartContestStatusWithClientSourceIp> map(Map<Integer, PartContent> idToPartContent) {
         return idToPartContent.entrySet().stream()
-                .map(integerPartContentEntry -> new AbstractMap.SimpleEntry<>(integerPartContentEntry.getKey(), integerPartContentEntry.getValue().getPartContentStatus()))
+                .map(integerPartContentEntry -> new AbstractMap.SimpleEntry<>(
+                        integerPartContentEntry.getKey(),
+                        new PartContestStatusWithClientSourceIp(
+                                integerPartContentEntry.getValue().getPartContentStatus(),
+                                integerPartContentEntry.getValue().getSourceClientIp())))
                 .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
     }
 
