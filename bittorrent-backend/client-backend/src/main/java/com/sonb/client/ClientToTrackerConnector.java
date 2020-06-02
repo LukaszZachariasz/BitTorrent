@@ -55,15 +55,14 @@ public class ClientToTrackerConnector {
         return (List<String>) restTemplate.getForObject(url, List.class);
     }
 
-    public void removeFileFromClient(String fileId, String trackerId, String myClientIp) {
+    public void removeFileFromClient(String fileId, Integer trackerId, String myClientIp) {
         String s = prepareRemoveFileFromClientUrl(fileId, trackerId, myClientIp);
         restTemplate.exchange(s, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
     }
 
-    private String prepareRemoveFileFromClientUrl(String fileId, String trackerId, String myClientIp) {
-        return "NOT YET IMPLEMENTED";
+    private String prepareRemoveFileFromClientUrl(String fileId, Integer trackerId, String myClientIp) {
+        return trackerList.get(trackerId) + "/" + fileId + "?clientIp=" + myClientIp;
     }
-
 
     public List<String> getTrackerList() {
         return trackerList;

@@ -9,6 +9,17 @@ import util.Torrent;
 import java.util.List;
 
 /**
+ * @DocumentationNote: Some important information:
+ * 1. About Re-downloading:
+ * Make loop (for example 10 times) when flag is set, where new list of clients is updated from tackers
+ * 2. Try download again status to file when for example: Client1 is Owner of file, Client2, Client3 was started
+ * downloading of this file, but during transfer file Client1 was removed from owner list of file at tracker.
+ * When Client1 will appear again the Client2 and Client3 will be continue of downloading
+ * 3. When Client will be trying of download file from other Client and will get response that this client is no owner
+ * of file, then client will be removed from tracker list as owner.
+ */
+
+/**
  * @author Łukasz Zachariasz
  */
 
@@ -29,10 +40,10 @@ public class ClientController {
         return ResponseEntity.ok(torrent);
     }
 
-    @DeleteMapping("{fileId}/{trackerId}")
+    @DeleteMapping("{fileId}")
     ResponseEntity<?> removeFileFromClient(@PathVariable String fileId,
-                                           @PathVariable String trackerId) {
-        clientService.removeFileFromClient(fileId, trackerId);
+                                           @RequestParam Integer trackerIp) {
+        clientService.removeFileFromClient(fileId, trackerIp);
         return ResponseEntity.ok("Removed");
     }
 
@@ -69,5 +80,16 @@ public class ClientController {
         return clientService.allPartIdWithStatuses();
     }
 
+    @GetMapping("allClientHaveFullFileToTrue")
+    ResponseEntity<?> allClientHaveFullFileToTrue() {
+        clientService.setAllClientHaveFullFile(true);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("allClientHaveFullFileToFalse")
+    ResponseEntity<?> allClientHaveFullFileToFalse() {
+        clientService.setAllClientHaveFullFile(false);
+        return ResponseEntity.ok().build();
+    }
 }
 

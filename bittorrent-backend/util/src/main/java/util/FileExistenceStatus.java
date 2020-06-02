@@ -6,6 +6,5 @@ package util;
 
 public enum FileExistenceStatus {
 
-    DOWNLOADED, NOT_COMPLETE, NON_EXISTING
-
+    DOWNLOADED, NOT_COMPLETE, NON_EXISTING, TRY_AGAIN
 }

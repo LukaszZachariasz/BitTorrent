@@ -54,7 +54,8 @@ public class FileInfo {
         return partIdToPartContentWithClientSourceIp;
     }
 
-    public void setPartIdToPartContentWithClientSourceIp(Map<Integer, PartContestStatusWithClientSourceIp> partIdToPartContentWithClientSourceIp) {
+    public void setPartIdToPartContentWithClientSourceIp(Map<Integer,
+            PartContestStatusWithClientSourceIp> partIdToPartContentWithClientSourceIp) {
         this.partIdToPartContentWithClientSourceIp = partIdToPartContentWithClientSourceIp;
     }
 }
