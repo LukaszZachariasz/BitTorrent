@@ -5,7 +5,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import util.RegisterTorrentRq;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -30,8 +29,8 @@ public class TrackerController {
     }
 
     @DeleteMapping("remove/{fileId}")
-    ResponseEntity<?> removeFileFromClient(@PathVariable String fileId, HttpServletRequest request) {
-        trackerService.removeFileFromClient(fileId, request.getRequestURL().toString());
+    ResponseEntity<?> removeFileFromClient(@PathVariable String fileId, @RequestParam String clientIp) {
+        trackerService.removeFileFromClient(fileId, clientIp);
 
         return ResponseEntity.ok().build();
     }

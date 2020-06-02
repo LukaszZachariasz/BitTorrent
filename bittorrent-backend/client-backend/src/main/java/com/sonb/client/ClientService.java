@@ -5,6 +5,7 @@ import util.*;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -19,7 +20,9 @@ public class ClientService {
 
     private final Map<String, File> fileIdToFile = new HashMap<>();
 
-    private Integer simulatedDownloadDelay = 5000; // five sec. delay for download part of file
+    private Integer simulatedDownloadDelay = 2000; // in ms delay for download part of file
+
+    private AtomicReference<Boolean> allClientHaveFullFile;
 
     private final IPFetcher ipFetcher;
     private final ClientToTrackerConnector clientToTrackerConnector;
@@ -32,9 +35,13 @@ public class ClientService {
         this.ipFetcher = ipFetcher;
         this.clientToTrackerConnector = clientToTrackerConnector;
         this.clientToClientConnector = clientToClientConnector;
-        this.fileDownloader = new FileDownloader(clientToClientConnector);
+        this.fileDownloader = new FileDownloader(clientToClientConnector, clientToTrackerConnector);
+        this.allClientHaveFullFile = new AtomicReference<>(Boolean.TRUE);
     }
 
+    public void setAllClientHaveFullFile(Boolean stateOfHaveCompleteFile) {
+        allClientHaveFullFile.set(stateOfHaveCompleteFile);
+    }
 
     public Integer getSimulatedDownloadDelay() {
         return simulatedDownloadDelay;
@@ -108,13 +115,10 @@ public class ClientService {
         }
     }
 
-    public void removeFileFromClient(String fileId, String trackerId) {
+    public void removeFileFromClient(String fileId, Integer trackerId) {
+        // TODO: makes this to removed
         fileIdToFile.remove(fileId);
-        clientToTrackerConnector.removeFileFromClient(fileId, trackerId, fetchMyIp());
-    }
-
-    private String fetchMyIp() {
-        return "NOT YET IMPLEMENTED";
+        clientToTrackerConnector.removeFileFromClient(fileId, trackerId, ipFetcher.getClientIp());
     }
 
     public List<FileInfo> allPartIdWithStatuses() {
@@ -158,7 +162,7 @@ public class ClientService {
         File notCompletedFile = createNotCompletedFile(torrent);
         fileIdToFile.put(torrent.getFileId(), notCompletedFile);
         clientToTrackerConnector.registerFileOwnerClient(torrent.getFileId());
-        fileDownloader.downloadFile(clientIps, torrent.getFileId(), notCompletedFile, simulatedDownloadDelay);
+        fileDownloader.downloadFile(clientIps, torrent.getFileId(), notCompletedFile, simulatedDownloadDelay, allClientHaveFullFile);
     }
 
     private File createNotCompletedFile(Torrent torrent) {
