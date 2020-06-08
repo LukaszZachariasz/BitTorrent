@@ -97,5 +97,12 @@ public class ClientController {
         clientService.restoreFile(fileId);
         return ResponseEntity.ok("File marked as existing again!");
     }
+
+    // For tracker only!
+    @GetMapping("checkFileExistence/{fileId}")
+    ResponseEntity<?> checkFileExistence(@PathVariable String fileId) {
+        boolean clientHaveFile = clientService.returnCheckFileExistence(fileId);
+        return ResponseEntity.ok(clientHaveFile);
+    }
 }
 

@@ -21,18 +21,18 @@ public class ClientToTrackerConnector {
 
     private final RestTemplate restTemplate;
 
-    private final IPFetcher ipFetcher;
+    private final ClientIpFetcher clientIpFetcher;
 
-    public ClientToTrackerConnector(List<String> trackerList, RestTemplateBuilder restTemplateBuilder, IPFetcher ipFetcher) {
+    public ClientToTrackerConnector(List<String> trackerList, RestTemplateBuilder restTemplateBuilder, ClientIpFetcher clientIpFetcher) {
         this.trackerList = trackerList;
         this.restTemplate = restTemplateBuilder.build();
-        this.ipFetcher = ipFetcher;
+        this.clientIpFetcher = clientIpFetcher;
     }
 
     public void registerTorrent(Torrent torrent) {
         RegisterTorrentRq registerTorrentRq = new RegisterTorrentRq();
         registerTorrentRq.setFileId(torrent.getFileId());
-        registerTorrentRq.setClientIp(ipFetcher.getClientIp());
+        registerTorrentRq.setClientIp(clientIpFetcher.getClientIp());
         HttpEntity<RegisterTorrentRq> httpEntity = new HttpEntity<>(registerTorrentRq);
         trackerList.forEach(trackerUrl -> restTemplate.exchange(trackerUrl + "/registerTorrent", HttpMethod.POST, httpEntity, String.class));
     }
@@ -78,7 +78,7 @@ public class ClientToTrackerConnector {
 
     private String createRegisterClientUrl(String trackerUrl, String fileId) {
         return UriComponentsBuilder.fromHttpUrl(trackerUrl + "/registerFileOwner/" + fileId)
-                .queryParam("clientIp", ipFetcher.getClientIp())
+                .queryParam("clientIp", clientIpFetcher.getClientIp())
                 .build()
                 .toUriString();
     }

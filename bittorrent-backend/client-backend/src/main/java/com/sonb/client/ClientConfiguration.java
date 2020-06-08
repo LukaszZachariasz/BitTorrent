@@ -20,8 +20,8 @@ public class ClientConfiguration {
     Integer serverPort;
 
     @Bean
-    IPFetcher ipFetcher() {
-        return new IPFetcher(serverPort);
+    ClientIpFetcher ipFetcher() {
+        return new ClientIpFetcher(serverPort);
     }
 
     @Bean
@@ -37,15 +37,8 @@ public class ClientConfiguration {
     }
 
     @Bean
-    ClientToClientConnector clientToClientConnector(RestTemplateBuilder restTemplateBuilder,
-                                                    @Value("${trackerUrlPrefix:http://localhost:700}") String urlPrefix,
-                                                    @Value("${trackersNumber:3}") int trackerNumber) {
-
-        List<String> trackersIps = IntStream.range(1, trackerNumber + 1)
-                .mapToObj(value -> createTrackerUrl(value, urlPrefix))
-                .collect(Collectors.toList());
-
-        return new ClientToClientConnector(restTemplateBuilder, trackersIps);
+    ClientToClientConnector clientToClientConnector(RestTemplateBuilder restTemplateBuilder) {
+        return new ClientToClientConnector(restTemplateBuilder);
     }
 
     private String createTrackerUrl(int number, String trackerUrlPrefix) {
