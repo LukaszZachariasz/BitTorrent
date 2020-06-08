@@ -17,7 +17,7 @@ import java.util.stream.IntStream;
  * @author Łukasz Zachariasz
  */
 
-public class FileDownloader {
+public class ClientFileDownloader {
 
     private static final int MAX_RETRIES_TO_DOWNLOAD_PART = 10;
 
@@ -27,15 +27,15 @@ public class FileDownloader {
     private final ClientToTrackerConnector clientToTrackerConnector;
     private final ClientManagement clientManagement;
 
-    public FileDownloader(ClientToClientConnector clientToClientConnector,
-                          ClientToTrackerConnector clientToTrackerConnector) {
+    public ClientFileDownloader(ClientToClientConnector clientToClientConnector,
+                                ClientToTrackerConnector clientToTrackerConnector) {
         this.clientToClientConnector = clientToClientConnector;
         this.clientToTrackerConnector = clientToTrackerConnector;
         this.threadLocalRandom = ThreadLocalRandom.current();
         this.clientManagement = new ClientManagement();
     }
 
-    public void downloadFile(List<String> clientIps, String fileId, File notCompleteFile, Integer downloadDelay,
+    public void downloadFile(List<String> clientIps, String fileId, File notCompleteFile,
                              AtomicReference<Boolean> allClientHaveFullFile) {
         int numberOfParts = notCompleteFile.getFileSize();
 
@@ -47,7 +47,7 @@ public class FileDownloader {
             shuffleOrderListOfPartNumbers
                     .forEach(partNumber ->
                             downloadPart(clientIps, partNumber, fileId,
-                                    notCompleteFile, downloadDelay, allClientHaveFullFile));
+                                    notCompleteFile, allClientHaveFullFile));
 
             if (!FileExistenceStatus.DOWNLOADED.equals(notCompleteFile.getFileExistenceStatus())) {
                 notCompleteFile.setFileExistenceStatus(FileExistenceStatus.TRY_AGAIN);
@@ -57,27 +57,27 @@ public class FileDownloader {
     }
 
     private void downloadPart(List<String> clientIps, Integer partId, String fileId,
-                              File notCompleteFile, Integer downloadDelay,
+                              File notCompleteFile,
                               AtomicReference<Boolean> allClientHaveFullFile) {
 
         // TODO: refactor sleep and add in "infinity" loop downloading to try again when not complete file
 
 
         if (Boolean.TRUE.equals(allClientHaveFullFile.get())) {
-            tryDownloadPartOfFileJustOnce(clientIps, partId, fileId, notCompleteFile, downloadDelay);
+            tryDownloadPartOfFileJustOnce(clientIps, partId, fileId, notCompleteFile);
         } else {
-            tryDownloadPartOfFileContinuous(clientIps, partId, fileId, notCompleteFile, downloadDelay, allClientHaveFullFile);
+            tryDownloadPartOfFileContinuous(clientIps, partId, fileId, notCompleteFile, allClientHaveFullFile);
         }
     }
 
-    private void tryDownloadPartOfFileJustOnce(List<String> clientIps, Integer partId, String fileId,
-                                               File notCompleteFile, Integer downloadDelay) {
+    private void tryDownloadPartOfFileJustOnce(List<String> clientIps, Integer partId,
+                                               String fileId, File notCompleteFile) {
 
         PartContent partContent = notCompleteFile.getPartIdToPartContent().get(partId);
         if (PartContentStatus.EXISTING.equals(partContent.getPartContentStatus())) {
             return;
         }
-        delayDownloading(downloadDelay);
+        ClientControlBehavior.simulateDownloadDelay();
         int clientPickedNumber = clientManagement.getAvailableClientNumber(clientIps);
         String clientPickedIp = clientIps.get(clientPickedNumber);
         String part = clientToClientConnector.downloadPart(clientPickedIp, fileId, partId);
@@ -88,14 +88,14 @@ public class FileDownloader {
     }
 
     private void tryDownloadPartOfFileContinuous(List<String> clientIps, Integer partId, String fileId,
-                                                 File notCompleteFile, Integer downloadDelay,
+                                                 File notCompleteFile,
                                                  AtomicReference<Boolean> allClientHaveFullFile) {
 
         int numberOfRetriesFromOneClientIp = 0;
         List<String> newClientIps = new ArrayList<>(clientIps);
 
         while (Boolean.FALSE.equals(allClientHaveFullFile.get())) {
-            delayDownloading(downloadDelay);
+            ClientControlBehavior.simulateDownloadDelay();
 
             if (numberOfRetriesFromOneClientIp == MAX_RETRIES_TO_DOWNLOAD_PART) {
                 numberOfRetriesFromOneClientIp = 0;
@@ -105,7 +105,7 @@ public class FileDownloader {
 
             // In loop try to download also with new clientIps list
             try {
-                tryDownloadPartOfFileJustOnce(newClientIps, partId, fileId, notCompleteFile, downloadDelay);
+                tryDownloadPartOfFileJustOnce(newClientIps, partId, fileId, notCompleteFile);
                 System.out.println(String.format("Downloaded for file: %s Part number: %s", fileId, partId));
                 break;
             } catch (Exception e) {
@@ -116,11 +116,4 @@ public class FileDownloader {
         }
     }
 
-    private void delayDownloading(Integer downloadDelay) {
-        try {
-            Thread.sleep(downloadDelay);
-        } catch (InterruptedException ie) {
-            throw new RuntimeException("Error:", ie);
-        }
-    }
 }

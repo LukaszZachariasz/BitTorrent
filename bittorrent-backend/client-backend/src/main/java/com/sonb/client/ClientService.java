@@ -20,22 +20,20 @@ public class ClientService {
 
     private final Map<String, File> fileIdToFile = new HashMap<>();
 
-    private Integer simulatedDownloadDelay = 1000; // in ms delay for download part of file
-
     private AtomicReference<Boolean> allClientHaveFullFile;
 
-    private final IPFetcher ipFetcher;
+    private final ClientIpFetcher clientIpFetcher;
     private final ClientToTrackerConnector clientToTrackerConnector;
     private final ClientToClientConnector clientToClientConnector;
-    private final FileDownloader fileDownloader;
+    private final ClientFileDownloader clientFileDownloader;
 
     public ClientService(ClientToTrackerConnector clientToTrackerConnector,
                          ClientToClientConnector clientToClientConnector,
-                         IPFetcher ipFetcher) {
-        this.ipFetcher = ipFetcher;
+                         ClientIpFetcher clientIpFetcher) {
+        this.clientIpFetcher = clientIpFetcher;
         this.clientToTrackerConnector = clientToTrackerConnector;
         this.clientToClientConnector = clientToClientConnector;
-        this.fileDownloader = new FileDownloader(clientToClientConnector, clientToTrackerConnector);
+        this.clientFileDownloader = new ClientFileDownloader(clientToClientConnector, clientToTrackerConnector);
         this.allClientHaveFullFile = new AtomicReference<>(Boolean.FALSE);
     }
 
@@ -44,11 +42,11 @@ public class ClientService {
     }
 
     public Integer getSimulatedDownloadDelay() {
-        return simulatedDownloadDelay;
+        return ClientControlBehavior.getSimulateDownloadDelay();
     }
 
     public void setSimulatedDownloadDelay(Integer simulatedDownloadDelay) {
-        this.simulatedDownloadDelay = simulatedDownloadDelay;
+        ClientControlBehavior.setSimulateDownloadDelay(simulatedDownloadDelay);
     }
 
     public Torrent createTorrent(ClientFileRequest clientFileRequest) {
@@ -78,13 +76,14 @@ public class ClientService {
         file.setPartIdToPartContent(clientFileRequest.getValue()
                 .stream()
                 .collect(Collectors.toMap(s -> atomicInteger.getAndIncrement(),
-                        s -> PartContent.of(PartContentStatus.EXISTING, s, ipFetcher.getClientIp()))));
+                        s -> PartContent.of(PartContentStatus.EXISTING, s, clientIpFetcher.getClientIp()))));
 
         return file;
     }
 
     public String downloadPart(String fileId, int partId) {
-        sleep();
+
+        ClientControlBehavior.simulateDownloadDelay();
 
         File file = fileIdToFile.get(fileId);
 
@@ -114,17 +113,9 @@ public class ClientService {
                 .collect(Collectors.toList());
     }
 
-    void sleep() {
-        try {
-            Thread.sleep(simulatedDownloadDelay);
-        } catch (InterruptedException e) {
-            throw new RuntimeException();
-        }
-    }
-
     public void removeFileFromClient(String fileId, Integer trackerId) {
         fileIdToFile.get(fileId).setFileExistenceStatus(FileExistenceStatus.NON_EXISTING);
-        clientToTrackerConnector.removeFileFromClient(fileId, trackerId, ipFetcher.getClientIp());
+        clientToTrackerConnector.removeFileFromClient(fileId, trackerId, clientIpFetcher.getClientIp());
     }
 
     public List<FileInfo> allPartIdWithStatuses() {
@@ -168,7 +159,7 @@ public class ClientService {
         File notCompletedFile = createNotCompletedFile(torrent);
         fileIdToFile.put(torrent.getFileId(), notCompletedFile);
         clientToTrackerConnector.registerFileOwnerClient(torrent.getFileId());
-        fileDownloader.downloadFile(clientIps, torrent.getFileId(), notCompletedFile, simulatedDownloadDelay, allClientHaveFullFile);
+        clientFileDownloader.downloadFile(clientIps, torrent.getFileId(), notCompletedFile, allClientHaveFullFile);
     }
 
     private File createNotCompletedFile(Torrent torrent) {
@@ -198,5 +189,15 @@ public class ClientService {
     public void restoreFile(String fileId) {
         fileIdToFile.get(fileId).setFileExistenceStatus(FileExistenceStatus.DOWNLOADED);
         clientToTrackerConnector.registerFileOwnerClient(fileId);
+    }
+
+    public boolean returnCheckFileExistence(String fileId) {
+        File file = fileIdToFile.get(fileId);
+
+        if (file == null) {
+            return false;
+        }
+
+        return !FileExistenceStatus.NON_EXISTING.equals(file.getFileExistenceStatus());
     }
 }

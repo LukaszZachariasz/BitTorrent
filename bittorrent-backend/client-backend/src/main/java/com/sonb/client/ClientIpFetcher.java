@@ -6,11 +6,11 @@ import java.net.UnknownHostException;
 /**
  * @author Mateusz Zakrzewski
  */
-public class IPFetcher {
+public class ClientIpFetcher {
 
     private final Integer serverPort;
 
-    public IPFetcher(Integer serverPort) {
+    public ClientIpFetcher(Integer serverPort) {
         this.serverPort = serverPort;
     }
 
