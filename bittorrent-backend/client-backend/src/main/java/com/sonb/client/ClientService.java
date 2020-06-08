@@ -20,7 +20,7 @@ public class ClientService {
 
     private final Map<String, File> fileIdToFile = new HashMap<>();
 
-    private Integer simulatedDownloadDelay = 2000; // in ms delay for download part of file
+    private Integer simulatedDownloadDelay = 1000; // in ms delay for download part of file
 
     private AtomicReference<Boolean> allClientHaveFullFile;
 
@@ -36,7 +36,7 @@ public class ClientService {
         this.clientToTrackerConnector = clientToTrackerConnector;
         this.clientToClientConnector = clientToClientConnector;
         this.fileDownloader = new FileDownloader(clientToClientConnector, clientToTrackerConnector);
-        this.allClientHaveFullFile = new AtomicReference<>(Boolean.TRUE);
+        this.allClientHaveFullFile = new AtomicReference<>(Boolean.FALSE);
     }
 
     public void setAllClientHaveFullFile(Boolean stateOfHaveCompleteFile) {
@@ -85,7 +85,14 @@ public class ClientService {
 
     public String downloadPart(String fileId, int partId) {
         sleep();
-        PartContent partContent = fileIdToFile.get(fileId)
+
+        File file = fileIdToFile.get(fileId);
+
+        if (FileExistenceStatus.NON_EXISTING.equals(file.getFileExistenceStatus())) {
+            throw new RuntimeException("Part of this file not found!");
+        }
+
+        PartContent partContent = file
                 .getPartIdToPartContent()
                 .get(partId);
 
@@ -116,8 +123,7 @@ public class ClientService {
     }
 
     public void removeFileFromClient(String fileId, Integer trackerId) {
-        // TODO: makes this to removed
-        fileIdToFile.remove(fileId);
+        fileIdToFile.get(fileId).setFileExistenceStatus(FileExistenceStatus.NON_EXISTING);
         clientToTrackerConnector.removeFileFromClient(fileId, trackerId, ipFetcher.getClientIp());
     }
 
@@ -189,4 +195,8 @@ public class ClientService {
         return file;
     }
 
+    public void restoreFile(String fileId) {
+        fileIdToFile.get(fileId).setFileExistenceStatus(FileExistenceStatus.DOWNLOADED);
+        clientToTrackerConnector.registerFileOwnerClient(fileId);
+    }
 }

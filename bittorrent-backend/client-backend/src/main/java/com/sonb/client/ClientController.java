@@ -91,5 +91,11 @@ public class ClientController {
         clientService.setAllClientHaveFullFile(false);
         return ResponseEntity.ok().build();
     }
+
+    @GetMapping("restoreFile/{fileId}")
+    ResponseEntity<?> restoreFile(@PathVariable String fileId) {
+        clientService.restoreFile(fileId);
+        return ResponseEntity.ok("File marked as existing again!");
+    }
 }
 

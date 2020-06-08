@@ -25,12 +25,14 @@ public class FileDownloader {
 
     private final ClientToClientConnector clientToClientConnector;
     private final ClientToTrackerConnector clientToTrackerConnector;
+    private final ClientManagement clientManagement;
 
     public FileDownloader(ClientToClientConnector clientToClientConnector,
                           ClientToTrackerConnector clientToTrackerConnector) {
         this.clientToClientConnector = clientToClientConnector;
         this.clientToTrackerConnector = clientToTrackerConnector;
-        threadLocalRandom = ThreadLocalRandom.current();
+        this.threadLocalRandom = ThreadLocalRandom.current();
+        this.clientManagement = new ClientManagement();
     }
 
     public void downloadFile(List<String> clientIps, String fileId, File notCompleteFile, Integer downloadDelay,
@@ -71,22 +73,18 @@ public class FileDownloader {
     private void tryDownloadPartOfFileJustOnce(List<String> clientIps, Integer partId, String fileId,
                                                File notCompleteFile, Integer downloadDelay) {
 
-        try {
-            PartContent partContent = notCompleteFile.getPartIdToPartContent().get(partId);
-            if (PartContentStatus.EXISTING.equals(partContent.getPartContentStatus())) {
-                return;
-            }
-            delayDownloading(downloadDelay);
-            int clientPickedNumber = threadLocalRandom.nextInt(0, clientIps.size());
-            String clientPickedIp = clientIps.get(clientPickedNumber);
-            String part = clientToClientConnector.downloadPart(clientPickedIp, fileId, partId);
-            partContent.setPartContentStatus(PartContentStatus.EXISTING);
-            partContent.setSourceClientIp(clientPickedIp);
-            partContent.setData(part);
-            notCompleteFile.checkIsCompleteFileDownloaded();
-        } catch (Exception ex) {
-            System.out.println("File is still not complete, retrying...");
+        PartContent partContent = notCompleteFile.getPartIdToPartContent().get(partId);
+        if (PartContentStatus.EXISTING.equals(partContent.getPartContentStatus())) {
+            return;
         }
+        delayDownloading(downloadDelay);
+        int clientPickedNumber = clientManagement.getAvailableClientNumber(clientIps);
+        String clientPickedIp = clientIps.get(clientPickedNumber);
+        String part = clientToClientConnector.downloadPart(clientPickedIp, fileId, partId);
+        partContent.setPartContentStatus(PartContentStatus.EXISTING);
+        partContent.setSourceClientIp(clientPickedIp);
+        partContent.setData(part);
+        notCompleteFile.checkIsCompleteFileDownloaded();
     }
 
     private void tryDownloadPartOfFileContinuous(List<String> clientIps, Integer partId, String fileId,
@@ -106,8 +104,14 @@ public class FileDownloader {
             }
 
             // In loop try to download also with new clientIps list
-            tryDownloadPartOfFileJustOnce(newClientIps, partId, fileId, notCompleteFile, downloadDelay);
-
+            try {
+                tryDownloadPartOfFileJustOnce(newClientIps, partId, fileId, notCompleteFile, downloadDelay);
+                System.out.println(String.format("Downloaded for file: %s Part number: %s", fileId, partId));
+                break;
+            } catch (Exception e) {
+                System.out.println(String.format("Can't download for file: %s Part number: %s", fileId, partId));
+                System.out.println("File is still not complete, retrying...");
+            }
             numberOfRetriesFromOneClientIp++;
         }
     }
