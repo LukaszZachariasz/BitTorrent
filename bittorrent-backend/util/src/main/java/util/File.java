@@ -58,8 +58,10 @@ public class File {
     }
 
     public void checkIsCompleteFileDownloaded() {
-        if (isFileComplete())
+        if (isFileComplete()) {
+            System.out.println("File has been downloaded!");
             fileExistenceStatus = FileExistenceStatus.DOWNLOADED;
+        }
     }
 
     private boolean isFileComplete() {
