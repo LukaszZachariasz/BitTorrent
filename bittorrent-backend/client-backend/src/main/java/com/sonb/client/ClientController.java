@@ -1,6 +1,7 @@
 package com.sonb.client;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import util.PartIdWithPartStatus;
@@ -56,6 +57,11 @@ public class ClientController {
     @GetMapping("partIdWithStatuses/{fileId}")
     List<PartIdWithPartStatus> partIdWithStatuses(@PathVariable String fileId) {
         return clientService.partIdWithStatuses(fileId);
+    }
+
+    @GetMapping("activeClient")
+    HttpStatus activeClient() {
+        return HttpStatus.OK;
     }
 
     @GetMapping("sleep")

@@ -1,1 +1,15 @@
-<p>client-list works!</p>
+<mat-card>
+
+  <div *ngIf="connectedClients.length else noConnectedClients">
+    <mat-selection-list #clients>
+      <mat-list-option *ngFor="let client of connectedClients">
+        {{client}}
+      </mat-list-option>
+    </mat-selection-list>
+  </div>
+
+  <ng-template #noConnectedClients>
+    <app-loader [info]="'Waiting for clients'"></app-loader>
+  </ng-template>
+
+</mat-card>

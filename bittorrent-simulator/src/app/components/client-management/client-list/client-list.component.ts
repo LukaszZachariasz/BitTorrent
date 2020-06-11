@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {ClientInterface} from '../../../models/client/client.interface';
 
 @Component({
   selector: 'app-client-list',
@@ -7,7 +8,10 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ClientListComponent implements OnInit {
 
-  constructor() { }
+  connectedClients: ClientInterface[] = [];
+
+  constructor() {
+  }
 
   ngOnInit() {
   }
