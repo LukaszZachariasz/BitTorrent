@@ -25,7 +25,7 @@ export class ClientListComponent implements OnInit {
   }
 
   private initClientListRefreshing() {
-    setInterval(() => this.connectedClients = this.clientListService.getUpdatedClientList(), 2000);
+    setInterval(() => this.connectedClients = this.clientListService.getUpdatedClientList(), 5000);
   }
 
 }

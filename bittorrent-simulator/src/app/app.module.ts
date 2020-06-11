@@ -9,6 +9,8 @@ import {ClientManagementModule} from './components/client-management/client-mana
 import {TrackerManagementModule} from './components/tracker-management/tracker-management.module';
 import {SharedModule} from './shared/shared.module';
 import {ServicesModule} from './services/services.module';
+import {MatCardModule} from '@angular/material/card';
+import {FlexModule} from '@angular/flex-layout';
 
 
 @NgModule({
@@ -22,7 +24,9 @@ import {ServicesModule} from './services/services.module';
     BrowserAnimationsModule,
     ClientManagementModule,
     TrackerManagementModule,
-    SharedModule
+    SharedModule,
+    MatCardModule,
+    FlexModule
   ],
   providers: [
     ServicesModule
