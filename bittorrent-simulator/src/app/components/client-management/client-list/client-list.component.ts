@@ -1,5 +1,6 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {ClientInterface} from '../../../models/client/client.interface';
+import {ClientListService} from '../../../services/client-list.service';
 
 @Component({
   selector: 'app-client-list',
@@ -8,12 +9,23 @@ import {ClientInterface} from '../../../models/client/client.interface';
 })
 export class ClientListComponent implements OnInit {
 
+  @Output() selectClientEmitterToManagement: EventEmitter<ClientInterface> = new EventEmitter<ClientInterface>();
+
   connectedClients: ClientInterface[] = [];
 
-  constructor() {
+  constructor(private clientListService: ClientListService) {
   }
 
   ngOnInit() {
+    this.initClientListRefreshing();
+  }
+
+  setSelectedClient(client: ClientInterface) {
+    this.selectClientEmitterToManagement.emit(client);
+  }
+
+  private initClientListRefreshing() {
+    setInterval(() => this.connectedClients = this.clientListService.getUpdatedClientList(), 2000);
   }
 
 }

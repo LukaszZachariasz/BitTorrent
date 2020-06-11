@@ -1,4 +1,5 @@
 import {Component, OnInit} from '@angular/core';
+import {ClientInterface} from '../../../models/client/client.interface';
 
 @Component({
   selector: 'app-client',
@@ -7,6 +8,7 @@ import {Component, OnInit} from '@angular/core';
 })
 export class ClientComponent implements OnInit {
 
+  selectedClient: ClientInterface;
 
   constructor() {
 
@@ -15,4 +17,7 @@ export class ClientComponent implements OnInit {
   ngOnInit() {
   }
 
+  onLoadSelectedClient(client: ClientInterface) {
+    this.selectedClient = client;
+  }
 }

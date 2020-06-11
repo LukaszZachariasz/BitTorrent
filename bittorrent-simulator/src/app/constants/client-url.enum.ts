@@ -9,5 +9,5 @@ export enum ClientUrl {
   Client8 = 'http://localhost:6008',
   Client9 = 'http://localhost:6009',
   Client10 = 'http://localhost:6010',
-  Client11 = 'http://localhost:6011',
+  Client11 = 'http://localhost:6011'
 }

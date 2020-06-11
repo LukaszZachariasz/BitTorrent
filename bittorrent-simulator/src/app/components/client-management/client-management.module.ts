@@ -6,15 +6,14 @@ import {ClientManagementComponent} from './client-management.component';
 import {FlexModule} from '@angular/flex-layout';
 import {MatCardModule} from '@angular/material/card';
 import {MatListModule} from '@angular/material/list';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {SharedModule} from '../../shared/shared.module';
+import {ServicesModule} from '../../services/services.module';
 
 const MODULES = [
   ClientManagementComponent,
   ClientListComponent,
   ClientComponent
 ];
-
 
 @NgModule({
   declarations: [
@@ -28,9 +27,10 @@ const MODULES = [
     FlexModule,
     MatCardModule,
     MatListModule,
-    MatProgressSpinnerModule,
     SharedModule,
-  ]
+    ServicesModule
+  ],
+  providers: []
 })
 export class ClientManagementModule {
 }

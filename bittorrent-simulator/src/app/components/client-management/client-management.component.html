@@ -1,11 +1,12 @@
-<div fxLayout="row"
-     fxLayoutAlign="space-around center"
-     fxLayoutGap="20px">
-  <div fxFlex="40">
-    <app-client-list></app-client-list>
-  </div>
-  <div fxFlex="60">
-    <app-client></app-client>
+<div fxLayout="column" fxFlexAlign="space-between center">
+  <div fxLayout="row"
+       fxLayoutAlign="space-around"
+       fxLayoutGap="20px">
+    <div fxFlex="40">
+      <app-client-list (selectClientEmitterToManagement)="selectedClientEvent($event)"></app-client-list>
+    </div>
+    <div fxFlex="60">
+      <app-client></app-client>
+    </div>
   </div>
 </div>
-

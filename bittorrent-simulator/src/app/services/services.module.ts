@@ -1,16 +1,18 @@
 import {NgModule} from '@angular/core';
 import {CommonModule} from '@angular/common';
-import {ClientService} from './client.service';
+import {ClientListService} from './client-list.service';
 import {TrackerService} from './tracker.service';
+import {HttpClientModule} from '@angular/common/http';
 
 
 @NgModule({
   declarations: [],
   imports: [
-    CommonModule
+    CommonModule,
+    HttpClientModule
   ],
   providers: [
-    ClientService,
+    ClientListService,
     TrackerService
   ]
 })

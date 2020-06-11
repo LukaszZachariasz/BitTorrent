@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {ClientInterface} from '../../models/client/client.interface';
+import {ClientComponent} from './client/client.component';
 
 @Component({
   selector: 'app-client-management',
@@ -7,9 +9,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ClientManagementComponent implements OnInit {
 
-  constructor() { }
+  @ViewChild(ClientComponent) clientPanelComponent: ClientComponent;
+
+  private selectedClient: ClientInterface;
+
+  constructor() {
+  }
 
   ngOnInit() {
+  }
+
+  selectedClientEvent(client: ClientInterface) {
+    this.selectedClient = client;
+    this.clientPanelComponent.onLoadSelectedClient(client);
   }
 
 }
