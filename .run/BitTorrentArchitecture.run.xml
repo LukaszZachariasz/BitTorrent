@@ -1,0 +1,9 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="AllBitTorrentArchitecture" type="CompoundRunConfigurationType">
+    <toRun name="Tracker2" type="SpringBootApplicationConfigurationType" />
+    <toRun name="Client2" type="SpringBootApplicationConfigurationType" />
+    <toRun name="Tracker1" type="SpringBootApplicationConfigurationType" />
+    <toRun name="Client1" type="SpringBootApplicationConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>
