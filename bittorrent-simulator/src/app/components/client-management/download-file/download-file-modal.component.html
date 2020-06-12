@@ -1,0 +1,29 @@
+<div fxLayout="row" fxFlexAlign="space-around center">
+  <form [formGroup]="downloadFileForm"
+        (ngSubmit)="onConfirm()">
+    <mat-form-field>
+      <input matInput
+             [id]="'file'"
+             [formControlName]="'file'"
+             [placeholder]="'Torrent file'">
+      <button mat-icon-button
+              [type]="'button'"
+              [style.position]="'absolute'"
+              [style.top]="'-10px'"
+              [style.right]="'0'"
+              (change)="onChangeFile($event)"
+              (click)="inputFile.click()">
+        <mat-icon>
+          publish
+        </mat-icon>
+        <input hidden type="file" accept=".torrent" #inputFile>
+      </button>
+    </mat-form-field>
+    <div fxLayout="row" fxLayoutGap="40px" fxFlexAlign="space-around center">
+      <button mat-raised-button
+              [disabled]="!isDownloadPossible()">
+        Confirm Download
+      </button>
+    </div>
+  </form>
+</div>
