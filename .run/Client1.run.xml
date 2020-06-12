@@ -1,0 +1,14 @@
+<component name="ProjectRunConfigurationManager">
+    <configuration default="false" name="Client1" type="SpringBootApplicationConfigurationType"
+                   factoryName="Spring Boot" singleton="false">
+        <module name="client-backend"/>
+        <option name="SPRING_BOOT_MAIN_CLASS" value="com.sonb.client.ClientApplication"/>
+        <option name="ALTERNATIVE_JRE_PATH"/>
+        <envs>
+            <env name="-server.port" value="6001"/>
+        </envs>
+        <method v="2">
+            <option name="Make" enabled="true"/>
+        </method>
+    </configuration>
+</component>

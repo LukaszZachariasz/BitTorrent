@@ -1,18 +1,20 @@
-<mat-card>
-<mat-card-content>
-  <mat-card-subtitle>
-    List of clients
-  </mat-card-subtitle>
-  <div *ngIf="connectedClients.length else noConnectedClients">
-    <mat-selection-list #clients>
-      <mat-list-option *ngFor="let client of connectedClients"
-                       (click)="setSelectedClient(client)">
-        <strong>{{client.clientName}}</strong> {{client.clientIp}}
-      </mat-list-option>
-    </mat-selection-list>
-  </div>
-  <ng-template #noConnectedClients>
-    <app-loader [info]="'Waiting for clients'"></app-loader>
-  </ng-template>
-</mat-card-content>
-</mat-card>
+<div fxLayout="column" fxFill>
+  <mat-card>
+    <mat-card-content>
+      <mat-card-subtitle>
+        List of clients
+      </mat-card-subtitle>
+      <div *ngIf="connectedClients.length else noConnectedClients">
+        <mat-selection-list #clients>
+          <mat-list-option *ngFor="let client of connectedClients"
+                           (click)="setSelectedClient(client)">
+            <strong>{{client.clientName}}</strong> {{client.clientIp}}
+          </mat-list-option>
+        </mat-selection-list>
+      </div>
+      <ng-template #noConnectedClients>
+        <app-loader [info]="'Waiting for clients'"></app-loader>
+      </ng-template>
+    </mat-card-content>
+  </mat-card>
+</div>

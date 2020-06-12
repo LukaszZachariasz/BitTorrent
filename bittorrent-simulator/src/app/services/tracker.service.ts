@@ -7,7 +7,6 @@ import {HttpClient} from '@angular/common/http';
 export class TrackerService {
 
   constructor(private httpClient: HttpClient) {
-
   }
 
 }

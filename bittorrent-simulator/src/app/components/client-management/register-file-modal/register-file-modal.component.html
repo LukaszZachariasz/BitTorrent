@@ -1,0 +1,16 @@
+<form class="register-form" [formGroup]="registerFileForm" (ngSubmit)="onConfirm()">
+  <mat-form-field class="full-width">
+    <mat-label>File human name</mat-label>
+    <input matInput placeholder="MyFile.txt" value="MyFile.txt" formControlName="humanFileName">
+  </mat-form-field>
+
+  <mat-form-field class="full-width">
+    <mat-label>Input content of file divided on parts by comma</mat-label>
+    <textarea matInput placeholder="Part1, Part2, ..." formControlName="content"></textarea>
+  </mat-form-field>
+
+  <button mat-raised-button
+          [disabled]="registerFileForm.invalid">
+    Register file
+  </button>
+</form>

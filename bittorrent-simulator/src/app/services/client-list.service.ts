@@ -1,6 +1,6 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {ClientUrl} from '../constants/client-url.enum';
+import {ClientUrl} from '../constants/urls/client-url.enum';
 import {catchError, filter, tap} from 'rxjs/operators';
 import {ClientInterface} from '../models/client/client.interface';
 import {of} from 'rxjs';

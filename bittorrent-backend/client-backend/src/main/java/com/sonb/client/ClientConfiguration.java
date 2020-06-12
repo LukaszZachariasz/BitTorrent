@@ -27,7 +27,7 @@ public class ClientConfiguration {
     @Bean
     ClientToTrackerConnector clientToTrackerConnector(RestTemplateBuilder restTemplateBuilder,
                                                       @Value("${trackerUrlPrefix:http://localhost:700}") String urlPrefix,
-                                                      @Value("${trackersNumber:1}") int trackerNumber) {
+                                                      @Value("${trackersNumber:3}") int trackerNumber) {
 
         List<String> trackersIps = IntStream.range(1, trackerNumber + 1)
                 .mapToObj(value -> createTrackerUrl(value, urlPrefix))

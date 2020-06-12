@@ -1,0 +1,21 @@
+<mat-card>
+  <mat-card-content>
+    <div *ngIf="selectedClient else noConnectedClients">
+      <mat-card-subtitle>
+        Selected {{selectedClient.clientName}} Panel
+      </mat-card-subtitle>
+      <button mat-raised-button
+              (click)="onRegisterFile()">
+        Register File
+      </button>
+
+      <button mat-raised-button
+              (click)="onDownloadByTorrent()">
+        Download By Torrent file
+      </button>
+    </div>
+    <ng-template #noConnectedClients>
+      <app-loader [info]="'Waiting for choose client'"></app-loader>
+    </ng-template>
+  </mat-card-content>
+</mat-card>

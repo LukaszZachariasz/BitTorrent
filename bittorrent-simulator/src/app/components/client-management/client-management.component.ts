@@ -1,6 +1,7 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {ClientInterface} from '../../models/client/client.interface';
-import {ClientComponent} from './client/client.component';
+import {ClientPanelComponent} from './client-panel/client-panel.component';
+import {ClientFileListComponent} from './client-file-list/client-file-list.component';
 
 @Component({
   selector: 'app-client-management',
@@ -9,7 +10,8 @@ import {ClientComponent} from './client/client.component';
 })
 export class ClientManagementComponent implements OnInit {
 
-  @ViewChild(ClientComponent) clientPanelComponent: ClientComponent;
+  @ViewChild(ClientPanelComponent) clientPanelComponent: ClientPanelComponent;
+  @ViewChild(ClientFileListComponent) clientFileListComponent: ClientFileListComponent;
 
   private selectedClient: ClientInterface;
 
@@ -21,7 +23,7 @@ export class ClientManagementComponent implements OnInit {
 
   selectedClientEvent(client: ClientInterface) {
     this.selectedClient = client;
-    this.clientPanelComponent.onLoadSelectedClient(client);
+    this.clientPanelComponent.onChangeSelectedClient(client);
+    this.clientFileListComponent.onChangeSelectedClient(client);
   }
-
 }
