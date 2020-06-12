@@ -1,0 +1,4 @@
+export enum PartContentStatus {
+  EXISTING = 'EXISTING',
+  WAITING_FOR_DOWNLOAD = 'WAITING_FOR_DOWNLOAD'
+}

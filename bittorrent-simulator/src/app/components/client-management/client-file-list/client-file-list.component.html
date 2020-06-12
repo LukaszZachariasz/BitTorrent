@@ -1,0 +1,42 @@
+<div *ngIf="clientFilesDataSource.length === 0; else viewTable">
+  <app-loader [info]="'Waiting for Selected Client Files'"></app-loader>
+</div>
+
+<ng-template #viewTable>
+  <table mat-table
+         multiTemplateDataRows
+         class="mat-elevation-z8"
+         [dataSource]="clientFilesDataSource">
+    <ng-container matColumnDef="{{column}}"
+                  *ngFor="let column of columnsToDisplay">
+      <th mat-header-cell *matHeaderCellDef> {{column | uppercase}} </th>
+      <td mat-cell *matCellDef="let element"> {{element[column]}} </td>
+    </ng-container>
+    <ng-container matColumnDef="expandedDetail">
+      <td mat-cell
+          *matCellDef="let element"
+          [attr.colspan]="columnsToDisplay.length">
+        <div class="element-detail"
+             [@detailExpand]="element == expandedElement ? 'expanded' : 'collapsed'">
+          <div *ngFor="let el of [getArrayPartWithStatuses(element)]">
+            <div *ngFor="let part of el | keys">
+              <div fxLayout="row" fxFlexAlign="space-around center" fxLayoutGap="100px">
+                <div>
+                  <strong>Status: </strong> {{part.partContentStatus}}</div>
+                <div>
+                  <strong *ngIf="part.sourceClientIp">From client: </strong> {{part.sourceClientIp}}</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+    <tr mat-row *matRowDef="let element; columns: columnsToDisplay;"
+        class="element-row"
+        [class.example-expanded-row]="expandedElement === element"
+        (click)="expandedElement = expandedElement === element ? null : element">
+    </tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="detail-table-row"></tr>
+  </table>
+</ng-template>

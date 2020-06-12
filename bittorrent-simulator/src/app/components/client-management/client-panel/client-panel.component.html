@@ -13,25 +13,6 @@
               (click)="onDownloadByTorrent()">
         Download By Torrent file
       </button>
-
-
-      <app-registered-file-list [selectedClient]="selectedClient"></app-registered-file-list>
-      <!--			<mat-card *ngIf="registeredFiles.length > 0">-->
-      <!--				<mat-card-title>-->
-      <!--					Registered {{selectedClient}} Files-->
-      <!--				</mat-card-title>-->
-      <!--				<mat-selection-list #registeredFiles>-->
-      <!--					<mat-list-option *ngFor="let file of registeredFiles">-->
-      <!--						{{file.humanName}}-->
-      <!--					</mat-list-option>-->
-      <!--				</mat-selection-list>-->
-
-      <!--				<p>-->
-      <!--					Options selected: {{registeredFiles.selectedOptions.selected.length}}-->
-      <!--				</p>-->
-      <!--			</mat-card>-->
-
-
     </div>
     <ng-template #noConnectedClients>
       <app-loader [info]="'Waiting for choose client'"></app-loader>

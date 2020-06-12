@@ -1,4 +1,4 @@
 export interface RegisterFileInterface {
-  humanName: string,
-  value: string[]
+  humanName: string;
+  value: string[];
 }

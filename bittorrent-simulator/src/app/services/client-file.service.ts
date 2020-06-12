@@ -3,7 +3,7 @@ import {RegisterFileInterface} from '../models/client/register-file.interface';
 import {Observable} from 'rxjs';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {ClientInterface} from '../models/client/client.interface';
-import {TorrentFile} from '../models/client/torrent-file';
+import {TorrentFileInterface} from '../models/client/torrent-file.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -21,8 +21,11 @@ export class ClientFileService {
     return this.httpClient.post(client.clientIp + '/create', JSON.stringify(fileData), options);
   }
 
+  getClientFiles(selectedClient: ClientInterface) {
+    return this.httpClient.get(selectedClient.clientIp + '/allPartIdWithStatuses');
+  }
 
-  downloadByTorrentFile(torrentFile: TorrentFile, client: ClientInterface) {
+  downloadByTorrentFile(torrentFile: TorrentFileInterface, client: ClientInterface) {
     const options = {
       headers: new HttpHeaders()
         .set('Content-Type', 'application/json')
@@ -42,9 +45,7 @@ export class ClientFileService {
     anchor.click();
   }
 
-  private createTorrentFileName(torrentFile: TorrentFile) {
+  private createTorrentFileName(torrentFile: TorrentFileInterface) {
     return torrentFile.humanName + '_' + torrentFile.fileId + '.torrent';
   }
-
-
 }

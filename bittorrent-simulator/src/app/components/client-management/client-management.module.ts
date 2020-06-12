@@ -15,23 +15,27 @@ import {MatInputModule} from '@angular/material/input';
 import {ReactiveFormsModule} from '@angular/forms';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {OverlayModule} from '@angular/cdk/overlay';
-import {RegisteredFileListComponent} from './registered-file-list/registered-file-list.component';
+import {ClientFileListComponent, KeysPipe} from './client-file-list/client-file-list.component';
 import {DownloadFileModalComponent} from './download-file/download-file-modal.component';
 import {MatIconModule} from '@angular/material/icon';
 import {MatMenuModule} from '@angular/material/menu';
+import {MatTableModule} from '@angular/material/table';
+import {MatStepperModule} from '@angular/material/stepper';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 const MODULES = [
   ClientManagementComponent,
   ClientListComponent,
   ClientPanelComponent,
-  RegisterFileModalComponent
+  RegisterFileModalComponent,
+  DownloadFileModalComponent,
+  KeysPipe
 ];
 
 @NgModule({
   declarations: [
-    ...MODULES,
-    RegisteredFileListComponent,
-    DownloadFileModalComponent
+    ClientFileListComponent,
+    ...MODULES
   ],
   exports: [
     ...MODULES
@@ -49,7 +53,10 @@ const MODULES = [
     MatInputModule,
     ReactiveFormsModule,
     MatIconModule,
-    MatMenuModule
+    MatMenuModule,
+    MatTableModule,
+    MatStepperModule,
+    MatProgressBarModule
   ],
   entryComponents: [
     RegisterFileModalComponent,
