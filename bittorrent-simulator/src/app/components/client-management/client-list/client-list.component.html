@@ -2,14 +2,14 @@
   <mat-card (mouseover)="refreshList()"
             (mouseleave)="unlockRefresh()">
     <mat-card-content>
-      <mat-card-subtitle>
+      <mat-card-title>
         List of clients
-      </mat-card-subtitle>
+      </mat-card-title>
       <div *ngIf="connectedClients.length">
         <mat-selection-list #clients>
           <mat-list-option *ngFor="let client of connectedClients"
                            (click)="setSelectedClient(client)" checkboxPosition="before" selected disabled="true">
-            <strong>{{client.clientName}}</strong> {{client.clientIp}}
+            <strong>{{client.clientName}}</strong>
           </mat-list-option>
         </mat-selection-list>
       </div>

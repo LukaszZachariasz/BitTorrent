@@ -4,6 +4,7 @@ import {PartContentStatusWithSourceClientIp} from './part-content-status-with-so
 export interface ClientFilesInfoListInterface {
   fileExistenceStatus: FileExistenceStatus;
   fileSize: number;
+  torrentId: string;
   humanName: string;
   partIdToPartContentWithClientSourceIp: PartContentStatusWithSourceClientIp[];
 }

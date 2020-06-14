@@ -57,7 +57,7 @@ public class ClientToTrackerConnector {
     }
 
     public void removeFileFromClient(String fileId, String myClientIp) {
-        IntStream.range(1, trackerList.size() + 1)
+        IntStream.range(0, trackerList.size())
                 .boxed()
                 .forEach(tracker -> {
                     try {
@@ -70,7 +70,7 @@ public class ClientToTrackerConnector {
     }
 
     private String prepareRemoveFileFromClientUrl(String fileId, Integer trackerId, String myClientIp) {
-        return trackerList.get(trackerId) + "/" + fileId + "?clientIp=" + myClientIp;
+        return trackerList.get(trackerId) + "/remove/" + fileId + "?clientIp=" + myClientIp;
     }
 
     public List<String> getTrackerList() {

@@ -19,8 +19,6 @@ import java.util.stream.IntStream;
 
 public class ClientFileDownloader {
 
-    private static final int MAX_RETRIES_TO_DOWNLOAD_PART = 10;
-
     private final ThreadLocalRandom threadLocalRandom;
 
     private final ClientToClientConnector clientToClientConnector;
@@ -95,9 +93,8 @@ public class ClientFileDownloader {
         List<String> newClientIps = new ArrayList<>(clientIps);
 
         while (Boolean.FALSE.equals(allClientHaveFullFile.get())) {
-            ClientControlBehavior.simulateDownloadDelay();
 
-            if (numberOfRetriesFromOneClientIp == MAX_RETRIES_TO_DOWNLOAD_PART) {
+            if (numberOfRetriesFromOneClientIp == ClientControlBehavior.getMaxRetiresToDownloadPart()) {
                 numberOfRetriesFromOneClientIp = 0;
                 // Fetching new other potential owners of this file
                 newClientIps = clientToTrackerConnector.clientOwnersForFileId(fileId);

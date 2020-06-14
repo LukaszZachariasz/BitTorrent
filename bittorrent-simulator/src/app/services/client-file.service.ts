@@ -4,6 +4,7 @@ import {Observable} from 'rxjs';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {ClientInterface} from '../models/client/client.interface';
 import {TorrentFileInterface} from '../models/client/torrent-file.interface';
+import {ClientFilesInfoListInterface} from '../models/client/client-files-info-list.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -43,6 +44,14 @@ export class ClientFileService {
     anchor.download = this.createTorrentFileName(torrentFile);
     anchor.href = fileUrl;
     anchor.click();
+  }
+
+  removeFileForClient(client: ClientInterface, file: ClientFilesInfoListInterface) {
+    return this.httpClient.delete(client.clientIp + '/' + file.torrentId);
+  }
+
+  restoreFileForClient(client: ClientInterface, file: ClientFilesInfoListInterface) {
+    return this.httpClient.get(client.clientIp + '/restoreFile/' + file.torrentId);
   }
 
   private createTorrentFileName(torrentFile: TorrentFileInterface) {

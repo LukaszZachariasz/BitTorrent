@@ -12,6 +12,6 @@ public class ClientManagement {
     private final ThreadLocalRandom random = ThreadLocalRandom.current();
 
     public int getAvailableClientNumber(List<String> newClientIps) {
-        return random.nextInt(0, newClientIps.size() - 1);
+        return random.nextInt(0, newClientIps.size());
     }
 }

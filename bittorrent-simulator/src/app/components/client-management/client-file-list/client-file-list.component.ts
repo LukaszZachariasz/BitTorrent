@@ -7,14 +7,14 @@ import {ClientFilesInfoListInterface} from '../../../models/client/client-files-
 import {PartContentStatusWithSourceClientIp} from '../../../models/client/part-content-status-with-source-client-ip';
 import {PartContentStatus} from '../../../constants/part-content-status.enum';
 import {ConfigConstants} from '../../../constants/config-constants';
+import {FileExistenceStatus} from '../../../constants/file-status.enum';
 
 @Pipe({name: 'keys', pure: false})
 export class KeysPipe implements PipeTransform {
   transform(value: any, args?: any[]): any[] {
     if (value) {
-      const keyArr: any[] = Object.keys(value),
-        dataArr = [];
-      keyArr.forEach((key: any) => {
+      const dataArr = [];
+      Object.keys(value).forEach((key: any) => {
         dataArr.push(value[key]);
       });
       return dataArr;
@@ -36,7 +36,7 @@ export class KeysPipe implements PipeTransform {
 })
 export class ClientFileListComponent {
 
-  columnsToDisplay = ['fileExistenceStatus', 'fileSize', 'humanName', 'downloadProgress'];
+  columnsToDisplay = ['action', 'fileExistenceStatus', 'fileSize', 'humanName', 'torrentId', 'downloadProgress'];
   expandedElement: null;
   selectedClient: ClientInterface;
   clientFilesDataSource: ClientFilesInfoListInterface[] = [];
@@ -79,8 +79,28 @@ export class ClientFileListComponent {
     this.clientFileService.getClientFiles(this.selectedClient)
       .pipe(
         filter((res: ClientFilesInfoListInterface[]) => !!res),
+        tap((res) => console.log(res)),
         tap((res: ClientFilesInfoListInterface[]) => this.clientFilesDataSource = res)
       )
       .subscribe();
+  }
+
+  changeFileAccess(event, file: ClientFilesInfoListInterface) {
+    event.stopPropagation();
+    if (FileExistenceStatus.NON_EXISTING !== file.fileExistenceStatus) {
+      this.clientFileService.removeFileForClient(this.selectedClient, file)
+        .pipe(
+          filter(res => !res),
+          tap(res => console.log(res))
+        )
+        .subscribe();
+    } else {
+      this.clientFileService.restoreFileForClient(this.selectedClient, file)
+        .pipe(
+          filter(res => !res),
+          tap(res => console.log(res))
+        )
+        .subscribe();
+    }
   }
 }
