@@ -7,6 +7,11 @@
             {{selectedClient.clientName}} panel
           </mat-card-title>
         </div>
+        <div>
+          <mat-card-subtitle>
+            Client IP address: {{selectedClient.clientIp}}
+          </mat-card-subtitle>
+        </div>
         <div fxLayout="row" fxFlexAlign="space-around center" fxLayoutGap="20px">
           <button mat-raised-button
                   (click)="onRegisterFile()">Register File
