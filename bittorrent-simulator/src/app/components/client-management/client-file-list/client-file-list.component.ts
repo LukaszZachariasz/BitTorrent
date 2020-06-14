@@ -5,6 +5,8 @@ import {ClientFileService} from '../../../services/client-file.service';
 import {filter, tap} from 'rxjs/operators';
 import {ClientFilesInfoListInterface} from '../../../models/client/client-files-info-list.interface';
 import {PartContentStatusWithSourceClientIp} from '../../../models/client/part-content-status-with-source-client-ip';
+import {PartContentStatus} from '../../../constants/part-content-status.enum';
+import {ConfigConstants} from '../../../constants/config-constants';
 
 @Pipe({name: 'keys', pure: false})
 export class KeysPipe implements PipeTransform {
@@ -34,25 +36,51 @@ export class KeysPipe implements PipeTransform {
 })
 export class ClientFileListComponent {
 
-  columnsToDisplay = ['fileExistenceStatus', 'fileSize', 'humanName'];
+  columnsToDisplay = ['fileExistenceStatus', 'fileSize', 'humanName', 'downloadProgress'];
   expandedElement: null;
   selectedClient: ClientInterface;
   clientFilesDataSource: ClientFilesInfoListInterface[] = [];
+  refreshListTimer;
 
   constructor(private clientFileService: ClientFileService) {
   }
 
   onChangeSelectedClient(client: ClientInterface) {
     this.selectedClient = client;
+    this.updateFileList();
+    if (this.refreshListTimer) {
+      clearInterval(this.refreshListTimer);
+    }
+    this.refreshListTimer = setInterval(() => {
+      this.updateFileList();
+    }, ConfigConstants.REFRESH_FILES_INTERVAL);
+  }
+
+  getArrayPartWithStatuses(element: any): PartContentStatusWithSourceClientIp[] {
+    return [this.clientFilesDataSource.find(el => el === element).partIdToPartContentWithClientSourceIp][0];
+  }
+
+  getDownloadFileProgress(file: ClientFilesInfoListInterface): number {
+    let existingPartsNumber = 0;
+    if (file) {
+      const parts: PartContentStatusWithSourceClientIp[] = file.partIdToPartContentWithClientSourceIp;
+
+      for (let i = 0; i < Object.keys(parts).length; i++) {
+        if (PartContentStatus.EXISTING === parts[i].partContentStatus) {
+          existingPartsNumber++;
+        }
+      }
+      return existingPartsNumber > 0 ? (existingPartsNumber / Object.keys(parts).length) * 100 : existingPartsNumber;
+    }
+    return existingPartsNumber;
+  }
+
+  private updateFileList() {
     this.clientFileService.getClientFiles(this.selectedClient)
       .pipe(
         filter((res: ClientFilesInfoListInterface[]) => !!res),
         tap((res: ClientFilesInfoListInterface[]) => this.clientFilesDataSource = res)
       )
       .subscribe();
-  }
-
-  getArrayPartWithStatuses(element: any): PartContentStatusWithSourceClientIp[] {
-    return [this.clientFilesDataSource.find(el => el === element).partIdToPartContentWithClientSourceIp][0];
   }
 }
