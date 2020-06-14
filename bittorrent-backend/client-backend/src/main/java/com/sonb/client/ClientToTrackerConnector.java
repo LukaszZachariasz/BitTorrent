@@ -10,6 +10,7 @@ import util.Torrent;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * @author Łukasz Zachariasz
@@ -55,9 +56,17 @@ public class ClientToTrackerConnector {
         return (List<String>) restTemplate.getForObject(url, List.class);
     }
 
-    public void removeFileFromClient(String fileId, Integer trackerId, String myClientIp) {
-        String s = prepareRemoveFileFromClientUrl(fileId, trackerId, myClientIp);
-        restTemplate.exchange(s, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
+    public void removeFileFromClient(String fileId, String myClientIp) {
+        IntStream.range(1, trackerList.size() + 1)
+                .boxed()
+                .forEach(tracker -> {
+                    try {
+                        String s = prepareRemoveFileFromClientUrl(fileId, tracker, myClientIp);
+                        restTemplate.exchange(s, HttpMethod.DELETE, HttpEntity.EMPTY, String.class);
+                    } catch (Exception e) {
+                        throw new RuntimeException("Tracker is not responding while removing client");
+                    }
+                });
     }
 
     private String prepareRemoveFileFromClientUrl(String fileId, Integer trackerId, String myClientIp) {

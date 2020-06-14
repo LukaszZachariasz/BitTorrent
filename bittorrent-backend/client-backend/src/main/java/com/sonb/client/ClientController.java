@@ -42,9 +42,8 @@ public class ClientController {
     }
 
     @DeleteMapping("{fileId}")
-    ResponseEntity<?> removeFileFromClient(@PathVariable String fileId,
-                                           @RequestParam Integer trackerIp) {
-        clientService.removeFileFromClient(fileId, trackerIp);
+    ResponseEntity<?> removeFileFromClient(@PathVariable String fileId) {
+        clientService.removeFileFromClient(fileId);
         return ResponseEntity.ok("Removed");
     }
 

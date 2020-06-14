@@ -113,9 +113,9 @@ public class ClientService {
                 .collect(Collectors.toList());
     }
 
-    public void removeFileFromClient(String fileId, Integer trackerId) {
+    public void removeFileFromClient(String fileId) {
         fileIdToFile.get(fileId).setFileExistenceStatus(FileExistenceStatus.NON_EXISTING);
-        clientToTrackerConnector.removeFileFromClient(fileId, trackerId, clientIpFetcher.getClientIp());
+        clientToTrackerConnector.removeFileFromClient(fileId, clientIpFetcher.getClientIp());
     }
 
     public List<FileInfo> allPartIdWithStatuses() {
