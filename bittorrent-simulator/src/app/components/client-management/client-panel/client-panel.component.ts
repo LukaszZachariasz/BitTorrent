@@ -8,6 +8,7 @@ import {ClientFileService} from '../../../services/client-file.service';
 import {MatSnackBar} from '@angular/material/snack-bar';
 import {TorrentFileInterface} from '../../../models/client/torrent-file.interface';
 import {DownloadFileModalComponent} from '../download-file/download-file-modal.component';
+import {ConfigConstants} from '../../../constants/config-constants';
 
 @Component({
   selector: 'app-client-panel',
@@ -59,6 +60,6 @@ export class ClientPanelComponent implements OnInit {
   }
 
   private matSnackHandler(message: string) {
-    this.matSnackBar.open(message, 'DISMISS', {duration: 3000});
+    this.matSnackBar.open(message, 'DISMISS', {duration: ConfigConstants.TIME_OF_POPUP});
   }
 }

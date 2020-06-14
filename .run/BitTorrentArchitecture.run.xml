@@ -1,12 +1,13 @@
 <component name="ProjectRunConfigurationManager">
     <configuration default="false" name="AllBitTorrentArchitecture" type="CompoundRunConfigurationType">
-        <toRun name="Tracker3" type="SpringBootApplicationConfigurationType"/>
-        <toRun name="Tracker1" type="SpringBootApplicationConfigurationType"/>
-        <toRun name="Client1" type="SpringBootApplicationConfigurationType"/>
-        <toRun name="Tracker2" type="SpringBootApplicationConfigurationType"/>
         <toRun name="Client3" type="SpringBootApplicationConfigurationType"/>
-        <toRun name="Angular CLI Server (bittorrent-simulator)" type="js.build_tools.npm"/>
         <toRun name="Client2" type="SpringBootApplicationConfigurationType"/>
+        <toRun name="Angular CLI Server" type="js.build_tools.npm"/>
+        <toRun name="Client1" type="SpringBootApplicationConfigurationType"/>
+        <toRun name="Client4" type="SpringBootApplicationConfigurationType"/>
+        <toRun name="Tracker3" type="SpringBootApplicationConfigurationType"/>
+        <toRun name="Tracker2" type="SpringBootApplicationConfigurationType"/>
+        <toRun name="Tracker1" type="SpringBootApplicationConfigurationType"/>
         <method v="2"/>
     </configuration>
 </component>

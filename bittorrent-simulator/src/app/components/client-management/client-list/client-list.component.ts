@@ -13,19 +13,28 @@ export class ClientListComponent implements OnInit {
 
   connectedClients: ClientInterface[] = [];
 
+  refreshListBlock = true;
+
   constructor(private clientListService: ClientListService) {
   }
 
   ngOnInit() {
-    this.initClientListRefreshing();
+    this.refreshList();
   }
 
   setSelectedClient(client: ClientInterface) {
     this.selectClientEmitterToManagement.emit(client);
   }
 
-  private initClientListRefreshing() {
-    setInterval(() => this.connectedClients = this.clientListService.getUpdatedClientList(), 5000);
+  refreshList() {
+    if (this.refreshListBlock) {
+      this.refreshListBlock = !this.refreshListBlock;
+      this.connectedClients = this.clientListService.getUpdatedClientList();
+    }
+  }
+
+  unlockRefresh() {
+    this.refreshListBlock = !this.refreshListBlock;
   }
 
 }

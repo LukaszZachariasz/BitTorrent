@@ -1,20 +1,18 @@
 <div fxLayout="column" fxFill>
-  <mat-card>
+  <mat-card (mouseover)="refreshList()"
+            (mouseleave)="unlockRefresh()">
     <mat-card-content>
       <mat-card-subtitle>
         List of clients
       </mat-card-subtitle>
-      <div *ngIf="connectedClients.length else noConnectedClients">
+      <div *ngIf="connectedClients.length">
         <mat-selection-list #clients>
           <mat-list-option *ngFor="let client of connectedClients"
-                           (click)="setSelectedClient(client)">
+                           (click)="setSelectedClient(client)" checkboxPosition="before" selected disabled="true">
             <strong>{{client.clientName}}</strong> {{client.clientIp}}
           </mat-list-option>
         </mat-selection-list>
       </div>
-      <ng-template #noConnectedClients>
-        <app-loader [info]="'Waiting for clients'"></app-loader>
-      </ng-template>
     </mat-card-content>
   </mat-card>
 </div>
