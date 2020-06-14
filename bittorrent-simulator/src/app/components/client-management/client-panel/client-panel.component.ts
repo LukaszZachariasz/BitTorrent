@@ -9,6 +9,8 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {TorrentFileInterface} from '../../../models/client/torrent-file.interface';
 import {DownloadFileModalComponent} from '../download-file/download-file-modal.component';
 import {ConfigConstants} from '../../../constants/config-constants';
+import {MatSliderChange} from '@angular/material/slider';
+import {ClientControlBehaviourService} from '../../../services/client-control-behaviour.service';
 
 @Component({
   selector: 'app-client-panel',
@@ -18,10 +20,12 @@ import {ConfigConstants} from '../../../constants/config-constants';
 export class ClientPanelComponent implements OnInit {
 
   selectedClient: ClientInterface;
+  simulatedDownloadPartDelay: number;
 
   constructor(private matSnackBar: MatSnackBar,
               private modalBuilder: ModalBuilderService,
-              private clientFileService: ClientFileService) {
+              private clientFileService: ClientFileService,
+              private clientControlBehaviourService: ClientControlBehaviourService) {
   }
 
   ngOnInit() {
@@ -29,6 +33,11 @@ export class ClientPanelComponent implements OnInit {
 
   onChangeSelectedClient(client: ClientInterface) {
     this.selectedClient = client;
+    this.getDelayValue();
+  }
+
+  formatLabel(value: number) {
+    return value + 's';
   }
 
   onRegisterFile() {
@@ -52,9 +61,25 @@ export class ClientPanelComponent implements OnInit {
       .pipe(
         filter((torrentFile: TorrentFileInterface) => !!torrentFile),
         mergeMap((torrentFile: TorrentFileInterface) => {
-          return this.clientFileService.downloadByTorrentFile(torrentFile, this.selectedClient);
-        }),
-        tap(() => this.matSnackHandler('Download Started'))
+          return this.clientFileService.downloadByTorrentFile(torrentFile, this.selectedClient)
+            .pipe(
+              tap(() => this.matSnackHandler('Download Started'), () => this.matSnackHandler('Torrent Error'))
+            );
+        })
+      )
+      .subscribe();
+  }
+
+  setNewDelayValue(event: MatSliderChange) {
+    this.clientControlBehaviourService
+      .setNewDelayValue(event.value * 1000, this.selectedClient)
+      .subscribe();
+  }
+
+  private getDelayValue() {
+    this.clientControlBehaviourService.getDelayValue(this.selectedClient)
+      .pipe(
+        tap((res: any) => this.simulatedDownloadPartDelay = (res / 1000))
       )
       .subscribe();
   }

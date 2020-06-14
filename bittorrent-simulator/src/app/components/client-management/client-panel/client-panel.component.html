@@ -12,6 +12,17 @@
             Client IP address: {{selectedClient.clientIp}}
           </mat-card-subtitle>
         </div>
+        <div>
+          <mat-card-subtitle>
+            Simulated download part of file time delay
+          </mat-card-subtitle>
+          <mat-slider thumbLabel min="0" max="10" tickInterval="1"
+                      [displayWith]="formatLabel"
+                      [style.width]="'50%'"
+                      (change)="setNewDelayValue($event)"
+                      [value]="simulatedDownloadPartDelay">
+          </mat-slider>
+        </div>
         <div fxLayout="row" fxFlexAlign="space-around center" fxLayoutGap="20px">
           <button mat-raised-button
                   (click)="onRegisterFile()">Register File
