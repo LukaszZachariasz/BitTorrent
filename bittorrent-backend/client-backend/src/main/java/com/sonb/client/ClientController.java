@@ -76,8 +76,7 @@ public class ClientController {
 
     @PostMapping("downloadFile")
     ResponseEntity<?> downloadFile(@RequestBody Torrent torrent) {
-        clientService.downloadFile(torrent);
-        return ResponseEntity.ok("Download started");
+        return clientService.downloadFile(torrent);
     }
 
     @GetMapping("allPartIdWithStatuses")

@@ -3,6 +3,7 @@ import {CommonModule} from '@angular/common';
 import {ClientListService} from './client-list.service';
 import {TrackerService} from './tracker.service';
 import {HttpClientModule} from '@angular/common/http';
+import {ClientControlBehaviourService} from './client-control-behaviour.service';
 
 
 @NgModule({
@@ -13,7 +14,8 @@ import {HttpClientModule} from '@angular/common/http';
   ],
   providers: [
     ClientListService,
-    TrackerService
+    TrackerService,
+    ClientControlBehaviourService
   ]
 })
 export class ServicesModule {

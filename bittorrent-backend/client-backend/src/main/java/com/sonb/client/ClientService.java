@@ -1,5 +1,6 @@
 package com.sonb.client;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import util.*;
 
@@ -148,18 +149,21 @@ public class ClientService {
                 .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey, AbstractMap.SimpleEntry::getValue));
     }
 
-    public void downloadFile(Torrent torrent) {
+    public ResponseEntity<?> downloadFile(Torrent torrent) {
         System.out.println("Client as owners of file assigned in torrent file:");
         List<String> clientIps = clientToTrackerConnector.clientOwnersForFileId(torrent.getFileId());
 
         if (clientIps.size() == 0) {
-            fileIdToFile.put(torrent.getFileId(), createNotExistingFile(torrent));
+            return (ResponseEntity<?>) ResponseEntity.noContent();
+            //fileIdToFile.put(torrent.getFileId(), createNotExistingFile(torrent));
         }
 
         File notCompletedFile = createNotCompletedFile(torrent);
         fileIdToFile.put(torrent.getFileId(), notCompletedFile);
         clientToTrackerConnector.registerFileOwnerClient(torrent.getFileId());
         clientFileDownloader.downloadFile(clientIps, torrent.getFileId(), notCompletedFile, allClientHaveFullFile);
+
+        return ResponseEntity.ok("Download Started");
     }
 
     private File createNotCompletedFile(Torrent torrent) {

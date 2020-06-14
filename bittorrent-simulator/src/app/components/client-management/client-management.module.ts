@@ -23,6 +23,7 @@ import {MatTableModule} from '@angular/material/table';
 import {MatStepperModule} from '@angular/material/stepper';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatSliderModule} from '@angular/material/slider';
 
 const MODULES = [
   ClientManagementComponent,
@@ -58,7 +59,8 @@ const MODULES = [
     MatTableModule,
     MatStepperModule,
     MatProgressBarModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSliderModule
   ],
   entryComponents: [
     RegisterFileModalComponent,
